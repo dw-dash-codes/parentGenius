@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import Logo from "./ui/logo";
+import Logo from "./ui/Logo";
 
 
 export default function Navbar() {

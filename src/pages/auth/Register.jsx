@@ -1,6 +1,6 @@
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import Footer from "../../components/Footer";
-import Logo from "../../components/ui/logo";
+import Logo from "../../components/ui/Logo";
 
 export default function Register() {
 
