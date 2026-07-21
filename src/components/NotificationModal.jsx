@@ -1,4 +1,6 @@
 import Logo from "./ui/Logo";
+import bellImg from "../assets/popup_bell.png"
+import popLogo from "../assets/footer-img.png"
 
 export default function NotificationModal({ isOpen, onClose, onAllow }) {
   if (!isOpen) return null;
@@ -14,14 +16,14 @@ export default function NotificationModal({ isOpen, onClose, onAllow }) {
       >
 
         <div className="bg-brand-500 py-6 flex justify-center">
-          <Logo src={"src/assets/footer-img.png"} width={170} />
+          <Logo src={popLogo} width={170} />
         </div>
 
         <div className="px-8 py-8 text-center">
           <h2 className="text-xl font-bold mb-8">Turn On Notifications</h2>
 
           <img
-            src="https://placehold.co/180x180"
+            src={bellImg}
             alt="Notifications"
             className="w-44 h-44 mx-auto mb-8 object-contain"
           />
