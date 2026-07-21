@@ -1,6 +1,7 @@
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Logo from "../../components/ui/Logo";
+import img from "../../assets/register-left.jpg"
 
 export default function Register() {
 
@@ -11,7 +12,7 @@ export default function Register() {
         <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 items-center">
           <div className="relative rounded-2xl overflow-hidden h-[500px]">
             <img
-              src="src/assets/register-left.jpg"
+              src={img}
               alt="Family"
               className="w-full h-full object-cover"
             />

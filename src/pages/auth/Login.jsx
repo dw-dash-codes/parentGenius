@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Logo from "../../components/ui/Logo";
+import img from "../../assets/login-left.jpg"
 
 export default function Login() {
 
@@ -11,7 +12,7 @@ export default function Login() {
         <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 items-center">
           <div className="relative rounded-2xl overflow-hidden h-[500px]">
             <img
-              src="src/assets/login-left.jpg" 
+              src={img} 
               alt="Family"
               className="w-full h-full object-cover"
             />

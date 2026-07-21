@@ -1,5 +1,6 @@
 import { NavLink, Link } from "react-router-dom";
 import Logo from "./ui/Logo";
+import logoImg from "../assets/footer-img.png"
 
 export default function HomeNavbar() {
   const links = ["Home", "Courses", "Resources", "Therapy", "Community", "Challenges"];
@@ -7,7 +8,7 @@ export default function HomeNavbar() {
   return (
     <header className="absolute top-0 left-0 right-0 z-30">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <Logo width={160} src={"src/assets/footer-img.png"}/>
+        <Logo width={160} src={logoImg}/>
 
         <nav className="hidden lg:flex items-center gap-13">
           {links.map((label) => (
