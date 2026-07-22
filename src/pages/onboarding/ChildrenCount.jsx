@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import ProgressBar from "../../components/ui/ProgressBar";
 import bannerImg from "../../assets/children_img.png"
 
-
 function FloatingInput({ label, children, ...props }) {
   return (
     <div className="relative border border-brand-500 rounded-xl h-14 flex items-center px-4">
@@ -31,7 +30,6 @@ export default function ChildrenCount() {
         How many children do you have?
       </h1>
 
-
       <div className="flex justify-center mb-10">
         <img
           src={bannerImg}
@@ -39,7 +37,6 @@ export default function ChildrenCount() {
           className="w-full max-w-xl rounded-2xl object-cover"
         />
       </div>
-
 
       <div className="max-w-xl mx-auto">
         <FloatingInput
@@ -50,7 +47,6 @@ export default function ChildrenCount() {
           onChange={(e) => setCount(Number(e.target.value))}
         />
       </div>
-
 
       <div className="flex justify-center mt-10 mb-10">
         <button

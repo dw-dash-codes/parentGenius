@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
-
-
 export default function ChildValues() {
   const navigate = useNavigate();
 
@@ -26,12 +24,12 @@ export default function ChildValues() {
   function toggle(opt) {
     setSelected((prev) => {
       if (prev.includes(opt)) {
-        return prev.filter((o) => o !== opt);   
+        return prev.filter((o) => o !== opt);
       }
       if (prev.length >= MAX) {
-        return prev;                             
+        return prev;
       }
-      return [...prev, opt];                     
+      return [...prev, opt];
     });
   }
 
@@ -45,7 +43,6 @@ export default function ChildValues() {
       <p className="text-center text-sm text-ink-500 mb-10">
         {selected.length}/{MAX} selected
       </p>
-
 
       <div className="space-y-3 mb-10">
         {options.map((opt) => {
@@ -81,7 +78,6 @@ export default function ChildValues() {
           );
         })}
       </div>
-
 
       <div className="flex justify-center mb-10">
         <button

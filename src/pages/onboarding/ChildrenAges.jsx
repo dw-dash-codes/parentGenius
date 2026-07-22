@@ -2,22 +2,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
-
-
 export default function ChildrenAges() {
   const navigate = useNavigate();
   const location = useLocation();
 
-
   const count = location.state?.count || 2;
-
 
   const [ages, setAges] = useState(Array.from({ length: count }, () => 18));
 
   const [activeIndex, setActiveIndex] = useState(0);
 
   const activeAge = ages[activeIndex];
-
 
   function setActiveAge(newAge) {
     setAges((prev) => {
@@ -34,7 +29,6 @@ export default function ChildrenAges() {
       <h1 className="text-3xl font-bold text-center mb-10">
         List the ages of your children
       </h1>
-
 
       <div className="flex flex-wrap justify-center gap-5 mb-12">
         {ages.map((age, i) => (
@@ -57,7 +51,6 @@ export default function ChildrenAges() {
           </button>
         ))}
       </div>
-
 
       <div className="flex flex-col items-center gap-2 mb-12 select-none">
         <button
@@ -103,7 +96,6 @@ export default function ChildrenAges() {
           </svg>
         </button>
       </div>
-
 
       <div className="flex justify-center mb-10">
         <button

@@ -17,12 +17,17 @@ import homeHero from "../assets/home_hero.png";
 import bookImg from "../assets/book_img.png";
 import therapyImg from "../assets/Home_therapy_img.png";
 import courseImg from "../assets/home_course_img.png";
-import testimonialImg from "../assets/testimonial_img.jpg"
+import testimonialImg from "../assets/testimonial_img.jpg";
+import homeBanner from "../assets/home_banner.jpg"
 
 function PosterCard({ img, onAdd }) {
   return (
     <div className="bg-white rounded-2xl overflow-hidden ring-1 ring-ink-100 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400">
-      <img src={img} alt="The Time Has Come" className="w-full h-40 sm:h-48 object-cover" />
+      <img
+        src={img}
+        alt="The Time Has Come"
+        className="w-full h-40 sm:h-48 object-cover"
+      />
       <div className="p-3">
         <p className="text-[11px] text-ink-500 mb-1">Will Leitch</p>
         <div className="flex items-center justify-between gap-2">
@@ -137,6 +142,11 @@ export default function Home() {
       <HomeNavbar />
 
       <section className="relative overflow-hidden bg-brand-500">
+        <img
+          src={homeBanner}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
+        />
         <span className="absolute top-24 right-[20%] w-3 h-3 rounded-full bg-white/70" />
         <span className="absolute top-16 right-[6%] w-2 h-2 rounded-full bg-white/60" />
 
@@ -151,18 +161,18 @@ export default function Home() {
               ParentGenius is an interesting platform that will teach you in
               more an interactive way
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <button
                 onClick={() => navigate("/register")}
-                className="h-14 px-10 rounded-full bg-white/25 text-white font-semibold text-lg transition-colors hover:bg-accent-500"
+                className="h-11 px-6 text-sm sm:h-14 sm:px-10 sm:text-lg rounded-full bg-white/25 text-white font-semibold transition-colors hover:bg-accent-500"
               >
                 Join for free
               </button>
-              <button className="flex items-center gap-3 text-white font-medium group">
-                <span className="w-14 h-14 rounded-full bg-white flex items-center justify-center text-brand-500 transition-all group-hover:scale-105 group-hover:text-accent-500">
-                  <FaPlay size={16} />
+              <button className="flex items-center gap-2 sm:gap-3 text-white font-medium group">
+                <span className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center text-brand-500 transition-all group-hover:scale-105 group-hover:text-accent-500">
+                  <FaPlay className="text-xs sm:text-base" />
                 </span>
-                <span className="text-lg transition-colors group-hover:text-accent-300">
+                <span className="text-sm sm:text-lg transition-colors group-hover:text-accent-300">
                   Watch how it works
                 </span>
               </button>
@@ -173,19 +183,23 @@ export default function Home() {
             <img
               src={homeHero}
               alt="Family"
-              className="max-h-[680px] w-full object-contain object-bottom"
+              className="max-h-none w-full object-contain scale-250  object-bottom"
             />
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0">
+        <div className="absolute -bottom-3 -left-3 -right-3">
           <svg
-            viewBox="0 0 1440 100"
+            viewBox="-208 518 1440 120"
             className="w-full"
             preserveAspectRatio="none"
             fill="#ffffff"
           >
-            <path d="M0,60 C360,120 1080,120 1440,60 L1440,100 L0,100 Z" />
+            <path
+              vectorEffect="non-scaling-stroke"
+              strokeLinecap="round"
+              d="M-205.4335 518.2226C4.0271 610.9906 490 617.2273 490 617.2273 490 617.2273 999.8984 624.4827 1226.3129 523.772L1232 629.7912 490 637.2273-208 629.7912Z"
+            />
           </svg>
         </div>
       </section>
@@ -274,7 +288,10 @@ export default function Home() {
           />
           <div>
             <h3 className="text-3xl font-bold mb-6">
-              Guided <span className="text-brand-500">Therapy <br /> Sessions</span>
+              Guided{" "}
+              <span className="text-brand-500">
+                Therapy <br /> Sessions
+              </span>
             </h3>
             <p className="text-ink-500 text-xl max-w-md">
               Professional therapy sessions designed to support children's
@@ -309,7 +326,9 @@ export default function Home() {
 
             <div className="rounded-2xl bg-white shadow-lg ring-1 ring-ink-100 overflow-hidden">
               <div className="bg-accent-500 px-8 py-4 text-center">
-                <h4 className="text-white font-semibold">Community Solutions</h4>
+                <h4 className="text-white font-semibold">
+                  Community Solutions
+                </h4>
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-3 mb-3">
@@ -317,7 +336,9 @@ export default function Home() {
                     KA
                   </div>
                   <div>
-                    <p className="text-sm font-medium leading-tight">Kofi Amoah</p>
+                    <p className="text-sm font-medium leading-tight">
+                      Kofi Amoah
+                    </p>
                     <span className="inline-block text-[11px] bg-brand-50 text-brand-500 px-2 py-0.5 rounded-full mt-0.5">
                       Sleep &amp; Routines
                     </span>
@@ -396,7 +417,8 @@ export default function Home() {
 
       <section className="max-w-7xl mx-auto px-6 py-16">
         <h2 className="text-3xl font-bold text-center mb-10">
-          Comprehensive <span className="text-brand-500">Parent & Child Courses</span>
+          Comprehensive{" "}
+          <span className="text-brand-500">Parent & Child Courses</span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {books.map((_, i) => (
@@ -404,11 +426,24 @@ export default function Home() {
               key={i}
               className="flex gap-4 p-3 rounded-xl ring-1 ring-transparent transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400 hover:bg-brand-50"
             >
-              <img src={bookImg} alt="" className="w-24 h-36 rounded-lg object-cover shrink-0" />
+              <img
+                src={bookImg}
+                alt=""
+                className="w-24 h-36 rounded-lg object-cover shrink-0"
+              />
               <div className="flex flex-col">
-                <h4 className="font-semibold text-sm mb-1">The Time Has Come</h4>
-                <p className="text-xs text-ink-500 mb-2">Lindbergh's Pharmacy is an Athens, Georgia, institution...</p>
-                <p className="text-sm mb-3"><span className="font-bold">$ 27.89</span> <span className="text-ink-500 line-through text-xs">$ 30.99</span></p>
+                <h4 className="font-semibold text-sm mb-1">
+                  The Time Has Come
+                </h4>
+                <p className="text-xs text-ink-500 mb-2">
+                  Lindbergh's Pharmacy is an Athens, Georgia, institution...
+                </p>
+                <p className="text-sm mb-3">
+                  <span className="font-bold">$ 27.89</span>{" "}
+                  <span className="text-ink-500 line-through text-xs">
+                    $ 30.99
+                  </span>
+                </p>
                 <button
                   onClick={() => alert("Added to basket!")}
                   className="mt-auto h-9 px-4 rounded-full bg-accent-500 text-white text-xs font-medium transition-colors hover:bg-accent-600 self-start"
@@ -420,13 +455,21 @@ export default function Home() {
           ))}
         </div>
         <div className="text-center mt-8">
-          <Link to="/courses" className="text-sm text-brand-500 font-medium hover:underline">See all</Link>
+          <Link
+            to="/courses"
+            className="text-sm text-brand-500 font-medium hover:underline"
+          >
+            See all
+          </Link>
         </div>
       </section>
 
       <section className="max-w-7xl mx-auto px-6 pb-16">
         <h2 className="text-3xl font-bold text-center mb-10">
-          Comprehensive <span className="text-brand-500">Parent & Child Software Solutions</span>
+          Comprehensive{" "}
+          <span className="text-brand-500">
+            Parent & Child Software Solutions
+          </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {software.map((_, i) => (
@@ -434,11 +477,24 @@ export default function Home() {
               key={i}
               className="flex gap-4 p-3 rounded-xl ring-1 ring-transparent transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400 hover:bg-brand-50"
             >
-              <img src={bookImg} alt="" className="w-24 h-36 rounded-lg object-cover shrink-0" />
+              <img
+                src={bookImg}
+                alt=""
+                className="w-24 h-36 rounded-lg object-cover shrink-0"
+              />
               <div className="flex flex-col">
-                <h4 className="font-semibold text-sm mb-1">The Time Has Come</h4>
-                <p className="text-xs text-ink-500 mb-2">Lindbergh's Pharmacy is an Athens, Georgia, institution...</p>
-                <p className="text-sm mb-3"><span className="font-bold">$ 27.89</span> <span className="text-ink-500 line-through text-xs">$ 30.99</span></p>
+                <h4 className="font-semibold text-sm mb-1">
+                  The Time Has Come
+                </h4>
+                <p className="text-xs text-ink-500 mb-2">
+                  Lindbergh's Pharmacy is an Athens, Georgia, institution...
+                </p>
+                <p className="text-sm mb-3">
+                  <span className="font-bold">$ 27.89</span>{" "}
+                  <span className="text-ink-500 line-through text-xs">
+                    $ 30.99
+                  </span>
+                </p>
                 <button
                   onClick={() => alert("Added to basket!")}
                   className="mt-auto h-9 px-4 rounded-full bg-accent-500 text-white text-xs font-medium transition-colors hover:bg-accent-600 self-start"
@@ -459,10 +515,8 @@ export default function Home() {
           {pricing.map((p) => (
             <div
               key={p.tag}
-              className={`relative rounded-2xl p-6 bg-white transition-all duration-200 hover:-translate-y-1 ${
-                p.featured
-                  ? "shadow-sm hover:shadow-2xl"
-                  : "shadow-sm ring-1 ring-ink-100 hover:shadow-xl hover:ring-brand-300"
+              className={`relative rounded-2xl p-6 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl ${
+                p.featured ? "" : "ring-1 ring-ink-100"
               }`}
             >
               {p.best && (
@@ -470,7 +524,9 @@ export default function Home() {
                   BEST !
                 </span>
               )}
-              <p className={`flex items-center gap-1.5 text-sm font-medium mb-2 ${p.iconColor}`}>
+              <p
+                className={`flex items-center gap-1.5 text-sm font-medium mb-2 ${p.iconColor}`}
+              >
                 {p.icon} {p.tag}
               </p>
               <div className="flex items-baseline gap-1 mb-6">
@@ -483,7 +539,9 @@ export default function Home() {
                     key={f}
                     className="flex items-center gap-2.5 text-sm text-ink-700"
                   >
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${p.checkBg} ${p.checkColor}`}>
+                    <span
+                      className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${p.checkBg} ${p.checkColor}`}
+                    >
                       <FaCheck size={9} />
                     </span>
                     {f}
@@ -507,16 +565,20 @@ export default function Home() {
             <p className="text-[#2F327D] text-sm tracking-widest mb-3">
               ————— TESTIMONIAL
             </p>
-            <h2 className="text-[#2F327D] font-[Nunito Sans] text-4xl font-bold mb-4">What They Say?</h2>
+            <h2 className="text-[#2F327D] font-[Nunito Sans] text-4xl font-bold mb-4">
+              What They Say?
+            </h2>
             <p className="text-[#2F327D] text-xl mb-3">
-              TOTC has got more than 100k positive ratings <br /> from our users around
-              the world.
+              TOTC has got more than 100k positive ratings <br /> from our users
+              around the world.
             </p>
             <p className="text-[#2F327D]  text-xl mb-6">
-              Some of the students and teachers were <br /> greatly helped by the
-              Skilline.
+              Some of the students and teachers were <br /> greatly helped by
+              the Skilline.
             </p>
-            <p className="text-[#2F327D] text-xl mb-6">Are you too? Please give your assessment</p>
+            <p className="text-[#2F327D] text-xl mb-6">
+              Are you too? Please give your assessment
+            </p>
             <button
               onClick={() => navigate("/courses")}
               className="h-11 px-6 rounded-full border border-ink-300 text-ink-700 text-sm font-medium transition-colors hover:border-accent-500 hover:text-accent-500"

@@ -1,17 +1,16 @@
 import { NavLink } from "react-router-dom";
 import Logo from "./ui/Logo";
 
-
 export default function Navbar() {
   const links = ["Home", "Courses", "Resources", "Therapy", "Community", "Challenges"];
 
   return (
-    <header className="bg-white border-b border-ink-100">
+    <header className="bg-white border-b border-ink-100 absolute top-0 left-0 right-0 z-30">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 
-        <Logo height={15}/>
+        <Logo width={160}/>
 
-        <nav className="hidden lg:flex items-center gap-x-11">
+        <nav className="hidden lg:flex items-center gap-13">
           {links.map((label) => (
             <NavLink
               key={label}

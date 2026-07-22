@@ -30,7 +30,6 @@ export default function Footer() {
           </div>
         </div>
 
-  
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm mb-3">
           <a href="#" className="transition-colors hover:text-accent-300 hover:underline">Careers</a>
           <span className="opacity-50">|</span>

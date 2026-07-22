@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
-
-
 export default function Struggles() {
   const navigate = useNavigate();
 

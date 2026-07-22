@@ -2,7 +2,6 @@ import { Outlet } from "react-router-dom";
 import Footer from "../Footer";
 import Logo from "../ui/Logo";
 
-
 export default function OnboardingLayout() {
   return (
     <div className="min-h-screen flex flex-col">

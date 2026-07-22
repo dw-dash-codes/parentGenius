@@ -31,8 +31,8 @@ export default function HomeNavbar() {
               <path d="M9 15V21C9 21 12 24 17 24C22 24 25 21 25 21V15L17 18L9 15Z" fill="white" opacity="0.75" />
             </svg>
           </div>
-          <Link to="/login" className="h-9 px-5 flex items-center rounded-full bg-white text-brand-500 text-sm font-medium transition-colors hover:bg-accent-500 hover:text-white">Login</Link>
-          <Link to="/register" className="h-9 px-5 flex items-center rounded-full border border-white/50 text-white text-sm font-medium transition-colors hover:border-accent-400 hover:text-accent-300">Sign Up</Link>
+          <Link to="/login" className="h-9 px-5 sm:h-9 sm:px-5 sm:text-sm flex items-center rounded-full bg-white text-brand-500 text-sm font-medium transition-colors hover:bg-accent-500 hover:text-white">Login</Link>
+          <Link to="/register" className="h-8 px-3 text-xs sm:h-9 sm:px-5 sm:text-sm flex items-center whitespace-nowrap rounded-full border border-white/50 text-white font-medium transition-colors hover:border-accent-400 hover:text-accent-300">Sign Up</Link>
         </div>
       </div>
     </header>

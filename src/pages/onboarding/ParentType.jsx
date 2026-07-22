@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
-
-
 export default function ParentType() {
   const navigate = useNavigate();
 
@@ -24,7 +22,6 @@ export default function ParentType() {
       <ProgressBar current={4}/>
 
       <h1 className="text-3xl font-bold text-center mb-10">Are you a:</h1>
-
 
       <div className="space-y-3 mb-4">
         {options.map((opt) => {
@@ -82,7 +79,7 @@ export default function ParentType() {
           value={note}
           onClick={() => {
             setSelected(opt);
-            if (opt !== "Other") setNote(""); 
+            if (opt !== "Other") setNote("");
           }}
           disabled={selected !== "Other"}
           placeholder={selected === "Other" ? "Please specify..." : ""}
@@ -103,7 +100,6 @@ export default function ParentType() {
           {note.length}/{maxLen}
         </div>
       </div>
-
 
       <div className="flex justify-center mb-10">
         <button

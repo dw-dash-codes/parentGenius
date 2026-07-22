@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
-
-
 export default function ImproveGoals() {
   const navigate = useNavigate();
 
@@ -22,12 +20,10 @@ export default function ImproveGoals() {
     "Other",
   ];
 
-
   const [selected, setSelected] = useState([
     "Handling tantrums/meltdowns",
     "Teen attitude/respect",
   ]);
-
 
   function toggle(opt) {
     setSelected((prev) =>
@@ -42,7 +38,6 @@ export default function ImproveGoals() {
       <h1 className="text-3xl font-bold text-center mb-10">
         What would you most like to improve over the next 30 days?
       </h1>
-
 
       <div className="space-y-3 mb-10">
         {options.map((opt) => {
@@ -74,7 +69,6 @@ export default function ImproveGoals() {
           );
         })}
       </div>
-
 
       <div className="flex justify-center mb-10">
         <button

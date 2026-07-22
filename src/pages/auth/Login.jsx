@@ -12,7 +12,7 @@ export default function Login() {
         <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 items-center">
           <div className="relative rounded-2xl overflow-hidden h-[500px]">
             <img
-              src={img} 
+              src={img}
               alt="Family"
               className="w-full h-full object-cover"
             />
@@ -32,7 +32,6 @@ export default function Login() {
             <p className="text-center text-sm text-ink-500 mb-5">
               Welcome to ParentGenius
             </p>
-
 
             <div className="flex bg-brand-50 rounded-full p-1 mb-6 max-w-xs mx-auto">
               <NavLink
@@ -62,7 +61,6 @@ export default function Login() {
               industry.
             </p>
 
-
             <label className="block text-sm font-medium text-ink-700 mb-1.5">
               Username
             </label>
@@ -71,7 +69,6 @@ export default function Login() {
               placeholder="Enter your User name"
               className="h-12 w-full rounded-full border border-ink-300 px-5 text-sm outline-1 outline-solid outline-(--color-brand-500) focus:border-brand-500 mb-4"
             />
-
 
             <label className="block text-sm font-medium text-ink-700 mb-1.5">
               Password
@@ -82,7 +79,6 @@ export default function Login() {
               className="h-12 w-full rounded-full border border-ink-300 px-5 text-sm outline-1 outline-solid outline-(--color-brand-500) focus:border-brand-500 mb-3"
             />
 
-
             <div className="flex items-center justify-between text-xs mb-6">
               <label className="flex items-center gap-2 text-ink-700">
                 <input type="checkbox" /> Remember me
@@ -91,7 +87,6 @@ export default function Login() {
                 Forgot Password?
               </a>
             </div>
-
 
             <div className="flex justify-end">
               <button className="h-12 w-64 px-10 rounded-full bg-brand-500 text-white font-medium hover:bg-brand-600"

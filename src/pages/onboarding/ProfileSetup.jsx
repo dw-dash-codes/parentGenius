@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import ProgressBar from "../../components/ui/ProgressBar";
 import profileImg from "../../assets/profile_img.jpg"
 
-
 function FloatingInput({ label, children, ...props }) {
   return (
     <div className="relative border border-brand-500 rounded-xl h-14 flex items-center px-4">
@@ -30,7 +29,6 @@ export default function ProfileSetup() {
 
       <h1 className="text-3xl font-bold text-center mb-8">Profile Setup</h1>
 
-
       <div className="flex justify-center mb-10">
         <div className="relative">
           <img
@@ -46,7 +44,6 @@ export default function ProfileSetup() {
           </button>
         </div>
       </div>
-
 
       <div className="max-w-xl mx-auto space-y-5">
         <FloatingInput label="Full Name" defaultValue="Debborah Willson" />
@@ -89,7 +86,6 @@ export default function ProfileSetup() {
           </svg>
         </FloatingInput>
       </div>
-
 
       <div className="flex justify-center mt-10 mb-10">
         <button

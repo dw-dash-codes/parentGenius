@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
-
-
 export default function Confidence() {
   const navigate = useNavigate();
 
@@ -18,13 +16,12 @@ export default function Confidence() {
         How confident do you feel in your parenting skills today?
       </h1>
 
-
       <div className="flex justify-center mb-4">
         <div className="flex bg-white rounded-2xl shadow-md overflow-hidden h-20 w-80">
           {Array.from({ length: TOTAL }).map((_, i) => {
             const value = i + 1;
-            const isFilled = value < scale;    
-            const isCurrent = value === scale; 
+            const isFilled = value < scale;
+            const isCurrent = value === scale;
             return (
               <button
                 key={value}
@@ -51,9 +48,7 @@ export default function Confidence() {
         </div>
       </div>
 
-
       <p className="text-center text-lg font-bold text-ink-900 mb-14">Scale {scale}</p>
-
 
       <div className="flex justify-center mb-10">
         <button

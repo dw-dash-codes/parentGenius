@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
-
-
 export default function CurrentNeeds() {
   const navigate = useNavigate();
 
@@ -64,7 +62,6 @@ export default function CurrentNeeds() {
           );
         })}
       </div>
-
 
       <div className="flex justify-center mb-10">
         <button

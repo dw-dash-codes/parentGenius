@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
-
-
 export default function EmailOptIn() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState("No");
@@ -17,7 +15,6 @@ export default function EmailOptIn() {
       <h1 className="text-3xl font-bold text-center mb-12">
         Would you be open to receiving weekly tips, tools, and progress reports by email?
       </h1>
-
 
       <div className="space-y-3 mb-12 max-w-xl mx-auto">
         {options.map((opt) => {
@@ -49,7 +46,6 @@ export default function EmailOptIn() {
           );
         })}
       </div>
-
 
       <div className="flex justify-center mb-10">
         <button

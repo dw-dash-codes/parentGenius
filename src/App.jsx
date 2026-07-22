@@ -15,6 +15,10 @@ import Confidence from "./pages/onboarding/Confidence";
 import EmailOptIn from "./pages/onboarding/EmailOptIn";
 import CurrentNeeds from "./pages/onboarding/CurrentNeeds";
 import Training from "./pages/Training";
+import Courses from "./pages/Courses";
+import CourseDetail from "./pages/CourseDetail";
+import CourseTopic from "./pages/CourseTopic";
+import CourseSolutions from "./pages/CourseSolutions";
 
 export default function App() {
   return (
@@ -40,6 +44,10 @@ export default function App() {
 
       <Route element={<MainLayout />}>
         <Route path="/training/:tab" element={<Training />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/courses/:id" element={<CourseDetail />} />
+        <Route path="/courses/topic/:topic" element={<CourseTopic />} />
+        <Route path="/courses/solutions/:topic" element={<CourseSolutions />} />
       </Route>
     </Routes>
   );
