@@ -19,6 +19,8 @@ import Courses from "./pages/Courses";
 import CourseDetail from "./pages/CourseDetail";
 import CourseTopic from "./pages/CourseTopic";
 import CourseSolutions from "./pages/CourseSolutions";
+import Resources from "./pages/Resources";
+import ResourceDetail from "./pages/ResourceDetail";
 
 export default function App() {
   return (
@@ -48,6 +50,8 @@ export default function App() {
         <Route path="/courses/:id" element={<CourseDetail />} />
         <Route path="/courses/topic/:topic" element={<CourseTopic />} />
         <Route path="/courses/solutions/:topic" element={<CourseSolutions />} />
+        <Route path="/resources" element={<Resources />} />
+        <Route path="/resources/:id" element={<ResourceDetail />} />
       </Route>
     </Routes>
   );
