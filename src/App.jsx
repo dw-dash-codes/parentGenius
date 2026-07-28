@@ -21,6 +21,9 @@ import CourseTopic from "./pages/CourseTopic";
 import CourseSolutions from "./pages/CourseSolutions";
 import Resources from "./pages/Resources";
 import ResourceDetail from "./pages/ResourceDetail";
+import Therapy from "./pages/Therapy";
+import Community from "./pages/Community";
+import Challenges from "./pages/Challenges";
 
 export default function App() {
   return (
@@ -40,6 +43,7 @@ export default function App() {
         <Route path="/onboarding/confidence" element={<Confidence />} />
         <Route path="/onboarding/email-optin" element={<EmailOptIn />} />
         <Route path="/onboarding/needs" element={<CurrentNeeds />} />
+        
       </Route>
 
       <Route path="/home" element={<Home/>} />
@@ -52,6 +56,10 @@ export default function App() {
         <Route path="/courses/solutions/:topic" element={<CourseSolutions />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/resources/:id" element={<ResourceDetail />} />
+        <Route path="/therapy" element={<Therapy />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/challenges" element={<Challenges />} />
+        {/* <Route path="/challenges/:day" element={<ChallengeDetail />} /> */}
       </Route>
     </Routes>
   );
