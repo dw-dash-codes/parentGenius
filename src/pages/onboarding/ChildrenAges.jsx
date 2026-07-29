@@ -55,7 +55,7 @@ export default function ChildrenAges() {
       <div className="flex flex-col items-center gap-2 mb-12 select-none">
         <button
           type="button"
-          onClick={() => setActiveAge(activeAge + 1)}
+          onClick={() => setActiveAge(activeAge - 1)}
           aria-label="Increase age"
           className="w-10 h-10 rounded-full flex items-center justify-center text-brand-500 hover:bg-brand-500/10 transition-colors"
         >
@@ -87,7 +87,7 @@ export default function ChildrenAges() {
 
         <button
           type="button"
-          onClick={() => setActiveAge(activeAge - 1)}
+          onClick={() => setActiveAge(activeAge + 1)}
           aria-label="Decrease age"
           className="w-10 h-10 rounded-full flex items-center justify-center text-brand-500 hover:bg-brand-500/10 transition-colors"
         >
