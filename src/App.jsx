@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import MainLayout from "./components/layout/MainLayout";
@@ -63,6 +63,8 @@ export default function App() {
         <Route path="/challenges" element={<Challenges />} />
         <Route path="/challenges/:day" element={<ChallengeDetail />} />
       </Route>
+
+      <Analytics />
     </Routes>
   );
 }
