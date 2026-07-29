@@ -4,22 +4,40 @@ import { FaStar } from "react-icons/fa6";
 import homeBanner from "../assets/home_banner.jpg";
 
 const AGES = [
-  "Newborn (0-2mo)", "Infant (3-11mo)", "Toddler (1-3 yrs)",
-  "Child (4-12yrs)", "Teen (13+)",
+  "Newborn (0-2mo)",
+  "Infant (3-11mo)",
+  "Toddler (1-3 yrs)",
+  "Child (4-12yrs)",
+  "Teen (13+)",
 ];
 
 const TOPICS = [
-  "Tantrums & Emotional Regulation", "Sleep & Routines", "Discipline & Boundaries",
-  "Screen Time & Technology", "Chores", "Parent-Child Communication",
-  "Anxiety, Worry & Mental Health", "Sibling Relationships", "Co-Parenting & Divorce",
-  "Social Skills & Friendships", "School & Learning Support", "Behavior Issues",
-  "Confidence & Self-Esteem", "Puberty & Development", "Parent Burnout & Self-Care",
+  "Tantrums & Emotional Regulation",
+  "Sleep & Routines",
+  "Discipline & Boundaries",
+  "Screen Time & Technology",
+  "Chores",
+  "Parent-Child Communication",
+  "Anxiety, Worry & Mental Health",
+  "Sibling Relationships",
+  "Co-Parenting & Divorce",
+  "Social Skills & Friendships",
+  "School & Learning Support",
+  "Behavior Issues",
+  "Confidence & Self-Esteem",
+  "Puberty & Development",
+  "Parent Burnout & Self-Care",
 ];
 
 const ALL_REVIEWS = [
   { id: 1, user: "CatLover92", date: "22 Jul", topic: "Sleep & Routines" },
   { id: 2, user: "CatLover92", date: "22 Jul", topic: "Chores" },
-  { id: 3, user: "CatLover92", date: "22 Jul", topic: "Discipline & Boundaries" },
+  {
+    id: 3,
+    user: "CatLover92",
+    date: "22 Jul",
+    topic: "Discipline & Boundaries",
+  },
   { id: 4, user: "CatLover92", date: "22 Jul", topic: "Sleep & Routines" },
   { id: 5, user: "CatLover92", date: "22 Jul", topic: "Chores" },
   { id: 6, user: "CatLover92", date: "22 Jul", topic: "Behavior Issues" },
@@ -33,30 +51,38 @@ export default function Community() {
 
   const toggleTopic = (topic) =>
     setSelectedTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
     );
 
   const filtered = ALL_REVIEWS.filter((r) => {
-    const matchSearch = r.user.toLowerCase().includes(search.toLowerCase()) ||
+    const matchSearch =
+      r.user.toLowerCase().includes(search.toLowerCase()) ||
       r.topic.toLowerCase().includes(search.toLowerCase());
-    const matchTopic = selectedTopics.length === 0 || selectedTopics.includes(r.topic);
+    const matchTopic =
+      selectedTopics.length === 0 || selectedTopics.includes(r.topic);
     return matchSearch && matchTopic;
   });
 
   return (
     <div>
-      <section className="relative overflow-hidden bg-brand-500 text-white text-center px-6 py-16 sm:py-24">
-        <img src={homeBanner} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
-        <div className="relative max-w-3xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4">Community Solutions</h1>
-          <p className="italic text-lg sm:text-xl text-white/90 leading-relaxed">
-            Explore short, expert-led courses for real parenting challenges—on your time. Start by choosing your child's age, then browse or filter to find the right challenge.
-          </p>
-        </div>
+      <section className="relative overflow-hidden bg-brand-500 text-white text-center px-6 py-16 sm:py-20">
+        <img
+          src={homeBanner}
+          alt=""
+          className="absolute inset-0 w-full h-auto object-cover opacity-20"
+        />
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 py-10">
+          Community Solutions
+        </h1>
+
+        <p className="italic max-w-2xl mx-auto text-white/90 text-xl font-medium">
+          Explore short, expert-led courses for real parenting challenges—on
+          your time. Start by choosing your child's age, then browse or filter
+          to find the right challenge.
+        </p>
       </section>
 
       <div className="max-w-7xl mx-auto px-6 py-10 grid lg:grid-cols-[260px_1fr] gap-8">
-
         <aside>
           <h2 className="text-xl font-bold mb-4">Courses by Topic</h2>
 
@@ -66,7 +92,9 @@ export default function Community() {
               {AGES.map((age) => (
                 <button
                   key={age}
-                  onClick={() => setSelectedAge(selectedAge === age ? null : age)}
+                  onClick={() =>
+                    setSelectedAge(selectedAge === age ? null : age)
+                  }
                   className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
                     selectedAge === age
                       ? "bg-brand-500 text-white border-brand-500"
@@ -83,7 +111,10 @@ export default function Community() {
             <p className="text-sm font-semibold mb-3">Topics</p>
             <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
               {TOPICS.map((topic) => (
-                <label key={topic} className="flex items-center gap-2 text-sm text-ink-700 cursor-pointer hover:text-brand-500">
+                <label
+                  key={topic}
+                  className="flex items-center gap-2 text-sm text-ink-700 cursor-pointer hover:text-brand-500"
+                >
                   <input
                     type="checkbox"
                     checked={selectedTopics.includes(topic)}
@@ -101,7 +132,10 @@ export default function Community() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <h2 className="text-2xl font-bold">Community Solutions</h2>
             <div className="relative w-full sm:max-w-xs">
-              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-500" size={14} />
+              <FaSearch
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-500"
+                size={14}
+              />
               <input
                 type="text"
                 value={search}
@@ -118,7 +152,11 @@ export default function Community() {
                 <div key={r.id} className="bg-brand-50 rounded-2xl p-2">
                   <div className="bg-white rounded-xl p-4 ring-1 ring-ink-100 h-full">
                     <div className="flex items-center gap-2 mb-2">
-                      <img src="https://placehold.co/32x32" alt="" className="w-8 h-8 rounded-full" />
+                      <img
+                        src="https://placehold.co/32x32"
+                        alt=""
+                        className="w-8 h-8 rounded-full"
+                      />
                       <span className="text-sm font-medium">{r.user}</span>
                       <span className="text-xs text-ink-500">· {r.date}</span>
                     </div>
@@ -129,7 +167,11 @@ export default function Community() {
                       <span className="text-xs text-ink-500 ml-1">(30)</span>
                     </div>
                     <p className="text-sm text-ink-700 leading-relaxed">
-                      KaiB was amazing with our cats!! This was our first time using a pet-sitting service, so we were naturally quite anxious. We took a chance on Kai and completely lucked out! We booked Kai to come twice a day for three days. K...
+                      KaiB was amazing with our cats!! This was our first time
+                      using a pet-sitting service, so we were naturally quite
+                      anxious. We took a chance on Kai and completely lucked
+                      out! We booked Kai to come twice a day for three days.
+                      K...
                     </p>
                     <button className="text-brand-500 text-sm font-medium mt-2 hover:underline block">
                       Read More

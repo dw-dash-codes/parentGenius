@@ -34,17 +34,14 @@ export default function Challenges() {
 
   return (
     <div>
-      <section className="relative overflow-hidden bg-brand-500">
+      <section className="relative overflow-hidden bg-brand-500 text-white text-center px-6 py-16 sm:py-20">
         <img
           src={homeBanner}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-20"
+          className="absolute inset-0 w-full h-auto object-cover opacity-20"
         />
-        <div className="relative text-center py-30 px-6">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-wide">
-            Challenges
-          </h1>
-        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 py-10">Challenges</h1>
+
       </section>
 
       <div className="max-w-7xl mx-auto px-6">

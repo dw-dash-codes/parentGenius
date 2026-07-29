@@ -24,6 +24,7 @@ import ResourceDetail from "./pages/ResourceDetail";
 import Therapy from "./pages/Therapy";
 import Community from "./pages/Community";
 import Challenges from "./pages/Challenges";
+import ChallengeDetail from "./pages/ChallengeDetail";
 
 export default function App() {
   return (
@@ -59,7 +60,7 @@ export default function App() {
         <Route path="/therapy" element={<Therapy />} />
         <Route path="/community" element={<Community />} />
         <Route path="/challenges" element={<Challenges />} />
-        {/* <Route path="/challenges/:day" element={<ChallengeDetail />} /> */}
+        <Route path="/challenges/:day" element={<ChallengeDetail />} />
       </Route>
     </Routes>
   );

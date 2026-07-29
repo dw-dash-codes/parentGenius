@@ -13,23 +13,22 @@ export default function Therapy() {
 
   return (
     <div>
-      <section className="relative overflow-hidden bg-brand-500 text-white text-center px-6 py-16 sm:py-24">
+      <section className="relative overflow-hidden bg-brand-500 text-white text-center px-6 py-16 sm:py-20">
         <img
           src={homeBanner}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-20"
+          className="absolute inset-0 w-full h-auto object-cover opacity-20"
         />
-        <div className="relative max-w-3xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-6 mt-6">
-            Professional Support
-          </h1>
-          <p className="italic text-lg sm:text-xl text-white/90 leading-relaxed">
-            Some challenges need more than tips. Whether you need marriage or
-            family support, Parent Genius connects you with licensed therapists
-            online—affordable, private, and convenient. Get the support you need
-            from a qualified expert for more personalized solutions.
-          </p>
-        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-4 py-10">
+          Professional Support
+        </h1>
+
+        <p className="italic max-w-2xl mx-auto text-white/90 text-xl font-medium">
+          Some challenges need more than tips. Whether you need marriage or
+          family support, Parent Genius connects you with licensed therapists
+          online—affordable, private, and convenient. Get the support you need
+          from a qualified expert for more personalized solutions.
+        </p>
       </section>
 
       <section className="max-w-5xl mx-auto px-6 py-16">
