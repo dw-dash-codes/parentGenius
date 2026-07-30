@@ -86,9 +86,7 @@ export default function Challenges() {
         </div>
 
         <div className="grid lg:grid-cols-[1fr_340px] gap-6 lg:gap-8 pb-16">
-          {/* ---- LEFT ---- */}
           <div>
-            {/* Weekly calendar */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 ring-1 ring-ink-100 mb-6">
               <div className="flex items-start gap-2 sm:gap-4">
                 <div className="flex-1 min-w-0">
@@ -103,7 +101,6 @@ export default function Challenges() {
                       </p>
                     ))}
                   </div>
-                  {/* Date circles */}
                   <div className="grid grid-cols-7 gap-y-1">
                     {WEEK_DATES.map((date) => {
                       const done = COMPLETED.includes(date);
@@ -133,7 +130,6 @@ export default function Challenges() {
                       );
                     })}
                   </div>
-                  {/* Today dot */}
                   <div className="grid grid-cols-7 mt-1">
                     {WEEK_DATES.map((date) => (
                       <div key={date} className="flex justify-center">
@@ -144,7 +140,6 @@ export default function Challenges() {
                     ))}
                   </div>
                 </div>
-                {/* Month label */}
                 <div className="flex items-center gap-1 sm:gap-1.5 text-brand-500 font-semibold text-xs sm:text-sm whitespace-nowrap pt-1 shrink-0">
                   <span>May</span>
                   <FaCalendarDays size={13} />
@@ -152,7 +147,6 @@ export default function Challenges() {
               </div>
             </div>
 
-            {/* Challenge list */}
             <div className="space-y-3 sm:space-y-4">
               {CHALLENGES.map((c) => (
                 <div
@@ -186,9 +180,7 @@ export default function Challenges() {
             </div>
           </div>
 
-          {/* ---- RIGHT ---- */}
           <div className="space-y-5 sm:space-y-6">
-            {/* Streak card */}
             <div className="bg-brand-50 rounded-2xl p-5 sm:p-6 ring-1 ring-ink-100">
               <div className="flex items-start justify-between mb-3">
                 <div>
@@ -222,7 +214,6 @@ export default function Challenges() {
               </div>
             </div>
 
-            {/* Mini streak calendar */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 ring-1 ring-ink-100">
               <div className="flex items-center justify-between mb-3 sm:mb-4">
                 <button
@@ -249,7 +240,6 @@ export default function Challenges() {
                 </button>
               </div>
 
-              {/* Fire grid */}
               <div className="space-y-1.5 sm:space-y-2">
                 {STREAK_GRID.map((week, wi) => (
                   <div key={wi} className="grid grid-cols-7">

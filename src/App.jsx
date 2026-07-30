@@ -26,6 +26,9 @@ import Therapy from "./pages/Therapy";
 import Community from "./pages/Community";
 import Challenges from "./pages/Challenges";
 import ChallengeDetail from "./pages/ChallengeDetail";
+import Account from "./pages/account/Account";
+import Edit from "./pages/account/Edit";
+import Level from "./pages/account/Level";
 
 export default function App() {
   return (
@@ -63,6 +66,10 @@ export default function App() {
         <Route path="/community" element={<Community />} />
         <Route path="/challenges" element={<Challenges />} />
         <Route path="/challenges/:day" element={<ChallengeDetail />} />
+
+        <Route path="/account" element={<Account />} />
+        <Route path="/account/edit" element={<Edit />} />
+        <Route path="/account/level" element={<Level />} />
       </Route>
 
     </Routes>
