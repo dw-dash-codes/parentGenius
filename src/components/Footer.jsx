@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import footerLogo from "../assets/footer-img.png";
 
 export default function Footer() {
@@ -33,9 +34,9 @@ export default function Footer() {
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm mb-3">
           <a href="#" className="transition-colors hover:text-accent-300 hover:underline">Careers</a>
           <span className="opacity-50">|</span>
-          <a href="#" className="transition-colors hover:text-accent-300 hover:underline">Privacy Policy</a>
+          <Link to="/privacy-policy" className="transition-colors hover:text-accent-300 hover:underline">Privacy Policy</Link>
           <span className="opacity-50">|</span>
-          <a href="#" className="transition-colors hover:text-accent-300 hover:underline">Terms &amp; Conditions</a>
+          <Link to="/terms-conditions" className="transition-colors hover:text-accent-300 hover:underline">Terms &amp; Conditions</Link>
         </div>
 
         <p className="text-center text-xs opacity-80">© 2025 ParentGenius</p>
