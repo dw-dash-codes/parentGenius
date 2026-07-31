@@ -29,6 +29,12 @@ import ChallengeDetail from "./pages/ChallengeDetail";
 import Account from "./pages/account/Account";
 import Edit from "./pages/account/Edit";
 import Level from "./pages/account/Level";
+import Bookmarks from "./pages/account/Bookmarks";
+import Reminders from "./pages/account/Reminders";
+import ChangePassword from "./pages/account/ChangePassword";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
+import Subscription from "./pages/account/Subscription";
 
 export default function App() {
   return (
@@ -70,6 +76,14 @@ export default function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/account/edit" element={<Edit />} />
         <Route path="/account/level" element={<Level />} />
+        <Route path="/account/bookmarks" element={<Bookmarks />} />
+        <Route path="/account/reminders" element={<Reminders />} />
+        <Route path="/account/password" element={<ChangePassword />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-conditions" element={<TermsConditions />} />
+        <Route path="/subscription" element={<Subscription />} />
+
+
       </Route>
 
     </Routes>
