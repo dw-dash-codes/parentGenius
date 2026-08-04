@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { FaPlay, FaEye, FaCartShopping } from "react-icons/fa6";
 import bookImg from "../assets/book_img.png";
 import courseImg from "../assets/home_course_img.png";
+import tabImg from "../assets/training_tab.jpg";
 
 const TABS = [
   { key: "parent", label: "Parent Training" },
@@ -13,6 +14,7 @@ function ParentContent() {
   const navigate = useNavigate();
   const books = [1, 2, 3, 4];
   const courses = [1, 2, 3, 4];
+  
   const BookRow = ({ title }) => (
     <section className="max-w-7xl mx-auto px-6 py-6">
       <div className="flex items-center justify-between mb-6">
@@ -39,6 +41,7 @@ function ParentContent() {
       </div>
     </section>
   );
+
   return (
     <div>
       <BookRow title="Resources" />
@@ -71,13 +74,19 @@ function ParentContent() {
 }
 
 function ChildContent() {
+  const navigate = useNavigate();
   const cards = Array.from({ length: 9 });
+
   return (
     <section className="max-w-7xl mx-auto px-6 py-10">
       <h2 className="text-xl sm:text-2xl font-bold mb-6">Child Training</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {cards.map((_, i) => (
-          <div key={i} className="bg-white rounded-2xl shadow-sm ring-1 ring-ink-100 overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400">
+          <div 
+            key={i} 
+            onClick={() => navigate(`/courses/${i + 1}`)}
+            className="bg-white rounded-2xl shadow-sm ring-1 ring-ink-100 overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400 cursor-pointer"
+          >
             <div className="p-3">
               <img src={courseImg} alt="" className="w-full h-52 object-cover rounded-2xl" />
             </div>
@@ -88,7 +97,7 @@ function ChildContent() {
               </div>
               <p className="text-xs text-ink-500 mb-4 pl-8">Age-appropriate character building activities</p>
               <div className="flex items-center justify-between pt-3 border-t border-ink-100">
-                <a href="#" className="text-sm text-ink-700 underline hover:text-brand-500">Read more</a>
+                <span className="text-sm text-ink-700 underline hover:text-brand-500">Read more</span>
                 <span className="flex items-center gap-1 text-xs text-ink-500">
                   <FaEye className="text-accent-500" size={14} /> 251,232
                 </span>
@@ -102,6 +111,7 @@ function ChildContent() {
 }
 
 function TutorialsContent() {
+  const navigate = useNavigate();
   const steps = [
     { t: "Start a Daily Parenting Plan", d: "Begin your journey by selecting one of our structured daily plans designed to create lasting positive changes in your family dynamics." },
     { t: "Focus on One Challenge", d: "Choose just one specific parenting challenge to work on. Success comes from focused effort rather than trying to fix everything at once." },
@@ -143,7 +153,11 @@ function TutorialsContent() {
           <h2 className="text-xl sm:text-2xl font-bold mb-6 text-center">Recommended</h2>
           <div className="space-y-6">
             {recommended.map((r) => (
-              <div key={r} className="bg-white rounded-2xl shadow-sm ring-1 ring-ink-100 overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400">
+              <div 
+                key={r} 
+                onClick={() => navigate(`/courses/${r}`)}
+                className="bg-white rounded-2xl shadow-sm ring-1 ring-ink-100 overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400 cursor-pointer"
+              >
                 <div className="p-3">
                   <img src={courseImg} alt="" className="w-full h-40 object-cover rounded-2xl" />
                 </div>
@@ -151,7 +165,7 @@ function TutorialsContent() {
                   <h4 className="font-semibold text-sm mb-1">Age-appropriate character building activities</h4>
                   <p className="text-xs text-ink-500 mb-3">Age-appropriate character building activities</p>
                   <div className="flex items-center justify-between pt-3 border-t border-ink-100">
-                    <a href="#" className="text-sm text-ink-700 underline hover:text-brand-500">Read more</a>
+                    <span className="text-sm text-ink-700 underline hover:text-brand-500">Read more</span>
                     <span className="flex items-center gap-1 text-xs text-ink-500">
                       <FaEye className="text-accent-500" size={14} /> 251,232
                     </span>
@@ -174,7 +188,7 @@ export default function Training() {
   return (
     <div>
       <section className="bg-brand-500 text-white">
-        <div className="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-2 gap-8 items-center">
+        <div className="max-w-7xl mx-auto px-6 py-12 mt-14 grid lg:grid-cols-2 gap-8 items-center">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-6">
               Even a 10-minute play break can brighten your child's day.
@@ -211,7 +225,7 @@ export default function Training() {
                 className={`flex items-center gap-2 sm:gap-3 rounded-full pl-2 pr-4 sm:pr-6 py-2 border transition-colors ${
                   isActive ? "bg-accent-500 text-white border-accent-500" : "bg-white border-ink-100 hover:border-accent-400"
                 }`}>
-                <img src="https://placehold.co/44x44" alt="" className="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover" />
+                <img src={tabImg} alt="" className="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover" />
                 <span className="font-medium text-sm sm:text-base whitespace-nowrap">{t.label}</span>
               </Link>
             );

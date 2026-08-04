@@ -18,7 +18,7 @@ import bookImg from "../assets/book_img.png";
 import therapyImg from "../assets/Home_therapy_img.png";
 import courseImg from "../assets/home_course_img.png";
 import testimonialImg from "../assets/testimonial_img.jpg";
-import homeBanner from "../assets/home_banner.jpg"
+import homeBanner from "../assets/home_banner.jpg";
 
 function PosterCard({ img, onAdd }) {
   return (
@@ -581,9 +581,23 @@ export default function Home() {
             </p>
             <button
               onClick={() => navigate("/courses")}
-              className="h-11 px-6 rounded-full border border-ink-300 text-ink-700 text-sm font-medium transition-colors hover:border-accent-500 hover:text-accent-500"
+              className="group flex items-center h-11 pl-6 pr-1 rounded-full border border-[#49bbbd] text-[#49bbbd] text-sm font-medium transition-all hover:bg-[#49bbbd]/10"
             >
-              Write your assessment
+              <span className="mr-4">Write your assessment</span>
+              <div className="w-9 h-9 rounded-full border border-[#49bbbd] flex items-center justify-center shrink-0 transition-transform group-hover:translate-x-0.5">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
             </button>
           </div>
           <div className="relative">
