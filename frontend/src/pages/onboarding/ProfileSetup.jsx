@@ -1,6 +1,7 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../../components/ui/ProgressBar";
-import profileImg from "../../assets/profile_img.jpg"
+import profileImg from "../../assets/profile_img.jpg";
 
 function FloatingInput({ label, children, ...props }) {
   return (
@@ -22,6 +23,44 @@ function FloatingInput({ label, children, ...props }) {
 
 export default function ProfileSetup() {
   const navigate = useNavigate();
+  
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    country: "cityabc,ayx",
+  });
+
+  useEffect(() => {
+
+    const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+    const savedData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    
+    setFormData({
+      fullName: savedData.fullName || "",
+      email: savedUser.email || savedData.email || "", 
+      phone: savedData.phone || "",
+      country: savedData.country || "cityabc,ayx",
+    });
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    const existingData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    const updatedData = { 
+      ...existingData, 
+      fullName: formData.fullName,
+      phone: formData.phone,
+      country: formData.country 
+    };
+    
+    localStorage.setItem("onboardingData", JSON.stringify(updatedData));
+    navigate("/onboarding/children");
+  };
 
   return (
     <div className="w-full max-w-3xl">
@@ -46,28 +85,46 @@ export default function ProfileSetup() {
       </div>
 
       <div className="max-w-xl mx-auto space-y-5">
-        <FloatingInput label="Full Name" defaultValue="Debborah Willson" />
+        <FloatingInput 
+          label="Full Name" 
+          name="fullName"
+          value={formData.fullName}
+          onChange={handleChange}
+          placeholder="Debborah Willson" 
+        />
+        
         <FloatingInput
           label="Email Address"
           type="email"
-          defaultValue="abc@gmail.com"
+          name="email"
+          value={formData.email}
+          readOnly
+          className="w-full outline-none text-ink-500 text-sm bg-transparent cursor-not-allowed"
         />
 
         <FloatingInput label="Phone Number">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full">
             <span className="text-xl">🇬🇧</span>
             <span className="text-ink-500 text-xs">▾</span>
             <input
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
               className="flex-1 outline-none text-ink-900 text-sm bg-transparent"
-              defaultValue="0000000"
+              placeholder="0000000"
             />
           </div>
         </FloatingInput>
 
         <FloatingInput label="Country & Time Zone">
-          <select className="w-full outline-none text-ink-900 text-sm bg-transparent appearance-none pr-6">
-            <option>cityabc,ayx</option>
-            <option>Another city</option>
+          <select 
+            name="country"
+            value={formData.country}
+            onChange={handleChange}
+            className="w-full outline-none text-ink-900 text-sm bg-transparent appearance-none pr-6 cursor-pointer"
+          >
+            <option value="cityabc,ayx">cityabc,ayx</option>
+            <option value="Another city">Another city</option>
           </select>
           <svg
             className="absolute right-4 top-1/2 -translate-y-1/2 text-brand-500 pointer-events-none"
@@ -89,8 +146,8 @@ export default function ProfileSetup() {
 
       <div className="flex justify-center mt-10 mb-10">
         <button
-          onClick={() => navigate("/onboarding/children")}
-          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          onClick={handleSubmit}
+          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600 cursor-pointer"
         >
           Save &amp; Next
         </button>

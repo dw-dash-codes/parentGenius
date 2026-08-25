@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
 export default function Struggles() {
@@ -16,10 +16,19 @@ export default function Struggles() {
     "Other",
   ];
 
-  const [selected, setSelected] = useState([
-    "Defiance/disrespect",
-    "No cooperation with chores/schoolwork",
-  ]);
+  const [selected, setSelected] = useState([]);
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    if (savedData.struggles && savedData.struggles.length > 0) {
+      setSelected(savedData.struggles);
+    } else {
+      setSelected([
+        "Defiance/disrespect",
+        "No cooperation with chores/schoolwork",
+      ]);
+    }
+  }, []);
 
   function toggle(opt) {
     setSelected((prev) =>
@@ -27,9 +36,17 @@ export default function Struggles() {
     );
   }
 
+  const handleNext = () => {
+    const existingData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    const updatedData = { ...existingData, struggles: selected };
+    localStorage.setItem("onboardingData", JSON.stringify(updatedData));
+    
+    navigate("/onboarding/confidence");
+  };
+
   return (
     <div className="w-full max-w-2xl">
-      <ProgressBar current={7}/>
+      <ProgressBar current={7} total={10} />
 
       <h1 className="text-3xl font-bold text-center mb-10">
         What are your biggest struggles right now?
@@ -68,8 +85,8 @@ export default function Struggles() {
 
       <div className="flex justify-center mb-10">
         <button
-          onClick={() => navigate("/onboarding/confidence")}
-          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          onClick={handleNext}
+          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600 cursor-pointer"
         >
           Save &amp; Next
         </button>

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
 export default function EmailOptIn() {
@@ -8,9 +8,24 @@ export default function EmailOptIn() {
 
   const options = ["Yes", "No"];
 
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    if (savedData.emailOptIn !== undefined) {
+      setSelected(savedData.emailOptIn ? "Yes" : "No");
+    }
+  }, []);
+
+  const handleNext = () => {
+    const existingData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    const updatedData = { ...existingData, emailOptIn: selected === "Yes" };
+    localStorage.setItem("onboardingData", JSON.stringify(updatedData));
+    
+    navigate("/onboarding/needs");
+  };
+
   return (
     <div className="w-full max-w-2xl">
-      <ProgressBar current={9}/>
+      <ProgressBar current={9} total={10} />
 
       <h1 className="text-3xl font-bold text-center mb-12">
         Would you be open to receiving weekly tips, tools, and progress reports by email?
@@ -49,8 +64,8 @@ export default function EmailOptIn() {
 
       <div className="flex justify-center mb-10">
         <button
-          onClick={() => navigate("/onboarding/needs")}
-          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          onClick={handleNext}
+          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600 cursor-pointer"
         >
           Save &amp; Next
         </button>

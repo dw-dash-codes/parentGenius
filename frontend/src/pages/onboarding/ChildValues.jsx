@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
 export default function ChildValues() {
@@ -19,7 +19,16 @@ export default function ChildValues() {
   ];
 
   const MAX = 3;
-  const [selected, setSelected] = useState(["Kindness", "Responsibility"]);
+  const [selected, setSelected] = useState([]);
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    if (savedData.childValues && savedData.childValues.length > 0) {
+      setSelected(savedData.childValues);
+    } else {
+      setSelected(["Kindness", "Responsibility"]);
+    }
+  }, []);
 
   function toggle(opt) {
     setSelected((prev) => {
@@ -33,9 +42,17 @@ export default function ChildValues() {
     });
   }
 
+  const handleNext = () => {
+    const existingData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    const updatedData = { ...existingData, childValues: selected };
+    localStorage.setItem("onboardingData", JSON.stringify(updatedData));
+    
+    navigate("/onboarding/struggles");
+  };
+
   return (
     <div className="w-full max-w-2xl">
-      <ProgressBar current={6}/>
+      <ProgressBar current={6} total={10} />
 
       <h1 className="text-3xl font-bold text-center mb-3">
         What are your top 3 values you want your children to learn?
@@ -81,8 +98,8 @@ export default function ChildValues() {
 
       <div className="flex justify-center mb-10">
         <button
-          onClick={() => navigate("/onboarding/struggles")}
-          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          onClick={handleNext}
+          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600 cursor-pointer"
         >
           Save &amp; Next
         </button>

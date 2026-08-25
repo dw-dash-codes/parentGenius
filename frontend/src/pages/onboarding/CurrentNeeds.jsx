@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
 export default function CurrentNeeds() {
@@ -16,7 +16,18 @@ export default function CurrentNeeds() {
     "Need a professional therapist",
   ];
 
-  const [selected, setSelected] = useState(["Learn more Parenting tools"]);
+  const [selected, setSelected] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    if (savedData.currentNeeds && savedData.currentNeeds.length > 0) {
+      setSelected(savedData.currentNeeds);
+    } else {
+      setSelected(["Learn more Parenting tools"]);
+    }
+  }, []);
 
   function toggle(opt) {
     setSelected((prev) =>
@@ -24,13 +35,62 @@ export default function CurrentNeeds() {
     );
   }
 
+  const handleComplete = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      const existingData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+      const finalData = { ...existingData, currentNeeds: selected };
+
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("Authentication error. Please login again.");
+      }
+
+      const response = await fetch("http://localhost:5000/api/users/onboarding", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(finalData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to complete onboarding.");
+      }
+
+      localStorage.removeItem("onboardingData");
+
+      const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+      const currentUser = JSON.parse(storage.getItem("user") || "{}");
+      storage.setItem("user", JSON.stringify({ ...currentUser, ...data.user, onboardingCompleted: true }));
+
+      navigate("/home");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-2xl">
-      <ProgressBar current={10}/>
+      <ProgressBar current={10} total={10} />
 
       <h1 className="text-3xl font-bold text-center mb-12">
         Tell us about your current needs
       </h1>
+
+      {error && (
+        <div className="bg-red-50 text-red-500 p-3 rounded-xl text-sm mb-6 text-center border border-red-200">
+          {error}
+        </div>
+      )}
 
       <div className="space-y-3 mb-12">
         {options.map((opt) => {
@@ -65,10 +125,11 @@ export default function CurrentNeeds() {
 
       <div className="flex justify-center mb-10">
         <button
-          onClick={() => navigate("/home")}
-          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          onClick={handleComplete}
+          disabled={loading}
+          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600 disabled:opacity-50 cursor-pointer"
         >
-          Let&apos;s Get To Work
+          {loading ? "Saving..." : "Let's Get To Work"}
         </button>
       </div>
     </div>

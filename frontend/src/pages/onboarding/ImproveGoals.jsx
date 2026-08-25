@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
 export default function ImproveGoals() {
@@ -20,10 +20,19 @@ export default function ImproveGoals() {
     "Other",
   ];
 
-  const [selected, setSelected] = useState([
-    "Handling tantrums/meltdowns",
-    "Teen attitude/respect",
-  ]);
+  const [selected, setSelected] = useState([]);
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    if (savedData.improveGoals && savedData.improveGoals.length > 0) {
+      setSelected(savedData.improveGoals);
+    } else {
+      setSelected([
+        "Handling tantrums/meltdowns",
+        "Teen attitude/respect",
+      ]);
+    }
+  }, []);
 
   function toggle(opt) {
     setSelected((prev) =>
@@ -31,9 +40,17 @@ export default function ImproveGoals() {
     );
   }
 
+  const handleNext = () => {
+    const existingData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    const updatedData = { ...existingData, improveGoals: selected };
+    localStorage.setItem("onboardingData", JSON.stringify(updatedData));
+    
+    navigate("/onboarding/values");
+  };
+
   return (
     <div className="w-full max-w-2xl">
-      <ProgressBar current={5}/>
+      <ProgressBar current={5} total={10} />
 
       <h1 className="text-3xl font-bold text-center mb-10">
         What would you most like to improve over the next 30 days?
@@ -72,8 +89,8 @@ export default function ImproveGoals() {
 
       <div className="flex justify-center mb-10">
         <button
-          onClick={() => navigate("/onboarding/values")}
-          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          onClick={handleNext}
+          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600 cursor-pointer"
         >
           Save &amp; Next
         </button>

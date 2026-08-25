@@ -6,13 +6,19 @@ export default function ChildrenAges() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const count = location.state?.count || 2;
-
-  const [ages, setAges] = useState(Array.from({ length: count }, () => 18));
+  const [ages, setAges] = useState(() => {
+    const savedData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    const count = savedData.childrenCount || location.state?.count || 1;
+    
+    if (savedData.childrenAges && savedData.childrenAges.length === count) {
+      return savedData.childrenAges;
+    }
+    return Array.from({ length: count }, () => 18);
+  });
 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const activeAge = ages[activeIndex];
+  const activeAge = ages[activeIndex] || 0;
 
   function setActiveAge(newAge) {
     setAges((prev) => {
@@ -22,9 +28,16 @@ export default function ChildrenAges() {
     });
   }
 
+  const handleNext = () => {
+    const existingData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    const updatedData = { ...existingData, childrenAges: ages };
+    localStorage.setItem("onboardingData", JSON.stringify(updatedData));
+    navigate("/onboarding/type");
+  };
+
   return (
     <div className="w-full max-w-3xl">
-      <ProgressBar current={3} />
+      <ProgressBar current={3} total={10} />
 
       <h1 className="text-3xl font-bold text-center mb-10">
         List the ages of your children
@@ -99,8 +112,8 @@ export default function ChildrenAges() {
 
       <div className="flex justify-center mb-10">
         <button
-          onClick={() => navigate("/onboarding/type")}
-          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          onClick={handleNext}
+          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600 cursor-pointer"
         >
           Save &amp; Next
         </button>

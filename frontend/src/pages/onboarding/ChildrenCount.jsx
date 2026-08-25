@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../../components/ui/ProgressBar";
 import bannerImg from "../../assets/children_img.png"
@@ -22,9 +22,24 @@ export default function ChildrenCount() {
   const navigate = useNavigate();
   const [count, setCount] = useState(2);
 
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    if (savedData.childrenCount !== undefined) {
+      setCount(savedData.childrenCount);
+    }
+  }, []);
+
+  const handleNext = () => {
+    const existingData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    const updatedData = { ...existingData, childrenCount: Number(count) };
+    localStorage.setItem("onboardingData", JSON.stringify(updatedData));
+    
+    navigate("/onboarding/ages", { state: { count: Number(count) } });
+  };
+
   return (
     <div className="w-full max-w-3xl">
-      <ProgressBar current={2}  />
+      <ProgressBar current={2} total={10} />
 
       <h1 className="text-3xl font-bold text-center mb-8">
         How many children do you have?
@@ -42,16 +57,16 @@ export default function ChildrenCount() {
         <FloatingInput
           label="Number of Children"
           type="number"
-          defaultValue="2"
+          min="0"
           value={count}
-          onChange={(e) => setCount(Number(e.target.value))}
+          onChange={(e) => setCount(e.target.value)}
         />
       </div>
 
       <div className="flex justify-center mt-10 mb-10">
         <button
-          onClick={() => navigate("/onboarding/ages", { state: { count } })}
-          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          onClick={handleNext}
+          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600 cursor-pointer"
         >
           Save &amp; Next
         </button>

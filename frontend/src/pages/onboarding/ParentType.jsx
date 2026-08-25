@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProgressBar from "../../components/ui/ProgressBar";
 
 export default function ParentType() {
@@ -15,11 +15,33 @@ export default function ParentType() {
 
   const [selected, setSelected] = useState("Married/Partnered");
   const [note, setNote] = useState("");
-  const maxLen = 10;
+  const maxLen = 100; // Changed from 10 to 100 as 10 is too short for a note
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    if (savedData.parentType) {
+      if (options.includes(savedData.parentType)) {
+        setSelected(savedData.parentType);
+      } else {
+        setSelected("Other");
+        setNote(savedData.parentType);
+      }
+    }
+  }, []);
+
+  const handleNext = () => {
+    const existingData = JSON.parse(localStorage.getItem("onboardingData") || "{}");
+    const finalParentType = selected === "Other" && note.trim() !== "" ? note : selected;
+    
+    const updatedData = { ...existingData, parentType: finalParentType };
+    localStorage.setItem("onboardingData", JSON.stringify(updatedData));
+    
+    navigate("/onboarding/goals");
+  };
 
   return (
     <div className="w-full max-w-2xl">
-      <ProgressBar current={4}/>
+      <ProgressBar current={4} total={10} />
 
       <h1 className="text-3xl font-bold text-center mb-10">Are you a:</h1>
 
@@ -30,7 +52,10 @@ export default function ParentType() {
             <button
               key={opt}
               type="button"
-              onClick={() => setSelected(opt)}
+              onClick={() => {
+                setSelected(opt);
+                if (opt !== "Other") setNote("");
+              }}
               className={`w-full flex items-center justify-between px-6 h-16 rounded-xl border text-left transition-colors ${
                 isSelected
                   ? "bg-accent-500 border-accent-500 text-white"
@@ -77,9 +102,10 @@ export default function ParentType() {
       >
         <textarea
           value={note}
-          onClick={() => {
-            setSelected(opt);
-            if (opt !== "Other") setNote("");
+          onChange={(e) => {
+            if (e.target.value.length <= maxLen) {
+              setNote(e.target.value);
+            }
           }}
           disabled={selected !== "Other"}
           placeholder={selected === "Other" ? "Please specify..." : ""}
@@ -103,8 +129,8 @@ export default function ParentType() {
 
       <div className="flex justify-center mb-10">
         <button
-          onClick={() => navigate("/onboarding/goals")}
-          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600"
+          onClick={handleNext}
+          className="px-16 py-3 rounded-full bg-brand-500 text-white font-semibold hover:bg-brand-600 cursor-pointer"
         >
           Save &amp; Next
         </button>
