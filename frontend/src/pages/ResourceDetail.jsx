@@ -50,7 +50,7 @@ export default function ResourceDetail() {
     const fetchResourceDetail = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:5000/api/resources/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/resources/${id}`);
         if (response.ok) {
           const data = await response.json();
           if (data && data.title) {

@@ -48,7 +48,7 @@ export default function Community() {
   useEffect(() => {
     const fetchSolutions = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/community");
+        const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/community");
         if (response.ok) {
           const data = await response.json();
           setSolutions(data);
@@ -83,7 +83,7 @@ export default function Community() {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/community/${id}/rate`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/community/${id}/rate`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -119,7 +119,7 @@ export default function Community() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/community", {
+      const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/community", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

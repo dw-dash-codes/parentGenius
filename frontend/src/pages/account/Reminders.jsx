@@ -11,7 +11,7 @@ export default function Reminders() {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         if (!token) return;
 
-        const response = await fetch("http://localhost:5000/api/users/reminders", {
+        const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/reminders", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -35,7 +35,7 @@ export default function Reminders() {
     try {
       const token = localStorage.getItem("token") || sessionStorage.getItem("token");
       
-      const response = await fetch(`http://localhost:5000/api/users/reminders/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/reminders/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

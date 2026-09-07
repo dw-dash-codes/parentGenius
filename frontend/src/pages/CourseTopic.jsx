@@ -21,7 +21,7 @@ export default function CourseTopic() {
       try {
         setLoading(true);
         // Fetch courses filtered by topic from backend API
-        const response = await fetch(`http://localhost:5000/api/courses?topic=${encodeURIComponent(formattedTopic)}`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/courses?topic=${encodeURIComponent(formattedTopic)}`);
         if (response.ok) {
           const data = await response.json();
           setCourses(data);

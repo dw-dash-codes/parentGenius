@@ -74,7 +74,7 @@ export default function Resources() {
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/resources");
+        const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/resources");
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data) && data.length > 0) {

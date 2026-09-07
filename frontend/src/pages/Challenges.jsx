@@ -32,7 +32,7 @@ export default function Challenges() {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         if (!token) return;
 
-        const response = await fetch("http://localhost:5000/api/users/profile", {
+        const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

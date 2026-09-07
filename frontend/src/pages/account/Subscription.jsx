@@ -28,7 +28,7 @@ export default function Subscription() {
     try {
       const token = localStorage.getItem("token") || sessionStorage.getItem("token");
       if (token) {
-        await fetch("http://localhost:5000/api/users/profile", {
+        await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/profile", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

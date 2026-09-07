@@ -40,14 +40,14 @@ export default function CourseDetail() {
       try {
         setLoading(true);
         // Fetch specific course details
-        const resCourse = await fetch(`http://localhost:5000/api/courses/${id}`);
+        const resCourse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/courses/${id}`);
         if (resCourse.ok) {
           const data = await resCourse.json();
           setCourse(data);
         }
 
         // Fetch recommended courses
-        const resRecommended = await fetch(`http://localhost:5000/api/courses`);
+        const resRecommended = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/courses`);
         if (resRecommended.ok) {
           const allCourses = await resRecommended.json();
           setRecommendedCourses(allCourses.filter((c) => (c._id || c.id) !== id).slice(0, 4));

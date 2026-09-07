@@ -12,7 +12,7 @@ export default function Bookmarks() {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         if (!token) return;
 
-        const response = await fetch("http://localhost:5000/api/users/bookmarks", {
+        const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/bookmarks", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -36,7 +36,7 @@ export default function Bookmarks() {
     try {
       const token = localStorage.getItem("token") || sessionStorage.getItem("token");
       
-      const response = await fetch(`http://localhost:5000/api/users/bookmarks/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/bookmarks/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

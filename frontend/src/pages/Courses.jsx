@@ -51,7 +51,7 @@ export default function Courses() {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         
         // Fetch all available courses
-        const resCourses = await fetch("http://localhost:5000/api/courses");
+        const resCourses = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/courses");
         if (resCourses.ok) {
           const data = await resCourses.json();
           setCourses(data);
@@ -59,7 +59,7 @@ export default function Courses() {
 
         // Fetch user's in-progress courses if logged in
         if (token) {
-          const resProgress = await fetch("http://localhost:5000/api/users/progress", {
+          const resProgress = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/progress", {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (resProgress.ok) {

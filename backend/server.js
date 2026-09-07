@@ -30,9 +30,10 @@ app.get('/api/health', (req,res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes); 
 app.use('/api/community', communityRoutes);
-
-
 app.use('/api/courses', courseRoutes);
+
+
+app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

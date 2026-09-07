@@ -22,7 +22,7 @@ export default function ChallengeDetail() {
       }
 
       // Backend API call to update user points and streak upon challenge completion
-      const response = await fetch("http://localhost:5000/api/users/complete-challenge", {
+      const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/complete-challenge", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

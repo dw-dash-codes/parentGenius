@@ -29,13 +29,13 @@ export default function CourseSolutions() {
     const fetchTopicData = async () => {
       try {
         setLoading(true);
-        const resSolutions = await fetch(`http://localhost:5000/api/community?topic=${encodeURIComponent(topicName)}`);
+        const resSolutions = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/community?topic=${encodeURIComponent(topicName)}`);
         if (resSolutions.ok) {
           const solData = await resSolutions.json();
           setSolutions(solData);
         }
 
-        const resCourses = await fetch(`http://localhost:5000/api/courses?topic=${encodeURIComponent(topicName)}`);
+        const resCourses = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/courses?topic=${encodeURIComponent(topicName)}`);
         if (resCourses.ok) {
           const courseData = await resCourses.json();
           setCourses(courseData);
