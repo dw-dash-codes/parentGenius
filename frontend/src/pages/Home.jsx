@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaClipboardList,
@@ -20,36 +20,34 @@ import courseImg from "../assets/home_course_img.png";
 import testimonialImg from "../assets/testimonial_img.jpg";
 import homeBanner from "../assets/home_banner.jpg";
 
-function PosterCard({ img, onAdd }) {
-  return (
-    <div className="bg-white rounded-2xl overflow-hidden ring-1 ring-ink-100 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400">
-      <img
-        src={img}
-        alt="The Time Has Come"
-        className="w-full h-40 sm:h-48 object-cover"
-      />
-      <div className="p-3">
-        <p className="text-[11px] text-ink-500 mb-1">Will Leitch</p>
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-sm whitespace-nowrap">
-            <span className="font-bold">$ 27.89</span>{" "}
-            <span className="text-ink-500 line-through text-xs">$ 30.99</span>
-          </p>
-          <button
-            onClick={onAdd}
-            className="h-8 px-3 rounded-full bg-accent-500 text-white text-[11px] font-medium inline-flex items-center justify-center gap-1.5 transition-colors hover:bg-accent-600 whitespace-nowrap"
-          >
-            <FaCartShopping size={11} /> Add to cart
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Home() {
   const navigate = useNavigate();
   const [showNotif, setShowNotif] = useState(true);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("http://localhost:5000/api/users/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const trainingCards = [
     {
@@ -79,8 +77,8 @@ export default function Home() {
   ];
 
   const courses = [1, 2, 3, 4];
-  const books = Array.from({ length: 12 });
-  const software = Array.from({ length: 12 });
+  const books = Array.from({ length: 6 });
+  const software = Array.from({ length: 6 });
 
   const pricing = [
     {
@@ -137,6 +135,11 @@ export default function Home() {
     },
   ];
 
+  const isSubscribed = user && user.tier && user.tier !== "Tier 1";
+  
+  const streak = user?.streakDays || 0;
+  const challengeProgressPercent = Math.min(Math.round((streak / 30) * 100), 100);
+
   return (
     <div>
       <HomeNavbar />
@@ -163,12 +166,12 @@ export default function Home() {
             </p>
             <div className="flex items-center gap-3 sm:gap-4">
               <button
-                onClick={() => navigate("/register")}
-                className="h-11 px-6 text-sm sm:h-14 sm:px-10 sm:text-lg rounded-full bg-white/25 text-white font-semibold transition-colors hover:bg-accent-500"
+                onClick={() => navigate(user ? "/account" : "/register")}
+                className="h-11 px-6 text-sm sm:h-14 sm:px-10 sm:text-lg rounded-full bg-white/25 text-white font-semibold transition-colors hover:bg-accent-500 cursor-pointer"
               >
-                Join for free
+                {user ? `Welcome, ${user.fullName || "Parent"}` : "Join for free"}
               </button>
-              <button className="flex items-center gap-2 sm:gap-3 text-white font-medium group">
+              <button className="flex items-center gap-2 sm:gap-3 text-white font-medium group cursor-pointer">
                 <span className="w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center text-brand-500 transition-all group-hover:scale-105 group-hover:text-accent-500">
                   <FaPlay className="text-xs sm:text-base" />
                 </span>
@@ -183,7 +186,7 @@ export default function Home() {
             <img
               src={homeHero}
               alt="Family"
-              className="max-h-none w-full object-contain scale-250  object-bottom"
+              className="max-h-none w-full object-contain scale-250 object-bottom"
             />
           </div>
         </div>
@@ -254,7 +257,7 @@ export default function Home() {
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-sm ring-1 ring-ink-100 flex items-center justify-between">
             <div>
-              <p className="text-sm text-ink-500 mb-1">3 April, 2025</p>
+              <p className="text-sm text-ink-500 mb-1">Streak: Day {streak}</p>
               <h3 className="text-xl font-bold mb-4">
                 30-Day
                 <br />
@@ -262,17 +265,17 @@ export default function Home() {
               </h3>
               <button
                 onClick={() => navigate("/challenges")}
-                className="h-10 px-5 rounded-full bg-accent-500 text-white text-sm font-medium transition-colors hover:bg-accent-600"
+                className="h-10 px-5 rounded-full bg-accent-500 text-white text-sm font-medium transition-colors hover:bg-accent-600 cursor-pointer"
               >
                 Continue Challenge
               </button>
             </div>
             <div
               className="w-28 h-28 rounded-full flex items-center justify-center"
-              style={{ background: "conic-gradient(#4caf50 65%, #eef0f4 0)" }}
+              style={{ background: `conic-gradient(#4caf50 ${challengeProgressPercent}%, #eef0f4 0)` }}
             >
               <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center font-bold">
-                65 %
+                {challengeProgressPercent} %
               </div>
             </div>
           </div>
@@ -302,75 +305,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
-          <div>
-            <h3 className="text-3xl font-bold mb-3">
-              <span className="text-brand-500">
-                Community Support <br /> Solutions
-              </span>{" "}
-              For Every Problem
-            </h3>
-            <p className="text-ink-500 text-xl max-w-md">
-              Creating a supportive community where parents, children, and
-              trainers can share experiences, find solutions, and grow together.
-            </p>
-          </div>
-          <div className="relative max-w-md mx-auto w-full">
-            <span className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-yellow-400 z-10">
-              <FaStar size={18} />
-            </span>
-            <span className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-accent-500 z-10">
-              <FaBookOpen size={18} />
-            </span>
-
-            <div className="rounded-2xl bg-white shadow-lg ring-1 ring-ink-100 overflow-hidden">
-              <div className="bg-accent-500 px-8 py-4 text-center">
-                <h4 className="text-white font-semibold">
-                  Community Solutions
-                </h4>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 shrink-0 rounded-full bg-brand-500 text-white flex items-center justify-center text-sm font-semibold">
-                    KA
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium leading-tight">
-                      Kofi Amoah
-                    </p>
-                    <span className="inline-block text-[11px] bg-brand-50 text-brand-500 px-2 py-0.5 rounded-full mt-0.5">
-                      Sleep &amp; Routines
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-0.5 text-yellow-400 mb-3">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <FaStar key={i} size={12} />
-                  ))}
-                </div>
-                <p className="text-sm text-ink-700 leading-relaxed mb-3">
-                  "This was our first time using a guided routine and we were
-                  understandably anxious. We were pleasantly surprised at how
-                  smoothly it went — we'd definitely recommend it!"
-                </p>
-                <button className="text-accent-500 text-xs font-medium hover:underline">
-                  Read More
-                </button>
-              </div>
-            </div>
-
-            <span className="absolute -bottom-3 right-8 w-3 h-3 rounded-full bg-brand-500" />
-            <span className="absolute top-10 -right-2 w-2 h-2 rounded-full bg-brand-300" />
-          </div>
-        </div>
-      </section>
-
       <section className="bg-brand-50 py-14">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-2">
-            Comprehensive{" "}
-            <span className="text-brand-500">Parent & Child Courses</span>
+            Comprehensive <span className="text-brand-500">Parent & Child Courses</span>
           </h2>
           <div className="flex items-center justify-between mb-8 mt-6">
             <h3 className="font-bold">Courses For You</h3>
@@ -400,12 +338,11 @@ export default function Home() {
                   Step-by-Step Parenting and Children Guidance
                 </h4>
                 <p className="text-xs text-ink-500 mb-4 px-1">
-                  Lorem ipsum dolor sit amet, consectetur adipising elit, sed do
-                  eiusmod tempor
+                  Learn practical tools to manage your daily routines and child behavior efficiently.
                 </p>
                 <button
                   onClick={() => navigate(`/courses/${c}`)}
-                  className="w-full h-10 rounded-full bg-accent-500 text-white text-sm font-medium transition-colors hover:bg-accent-600"
+                  className="w-full h-10 rounded-full bg-accent-500 text-white text-sm font-medium transition-colors hover:bg-accent-600 cursor-pointer"
                 >
                   View Detail
                 </button>
@@ -415,211 +352,63 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-center mb-10">
-          Comprehensive{" "}
-          <span className="text-brand-500">Parent & Child Courses</span>
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {books.map((_, i) => (
-            <div
-              key={i}
-              className="flex gap-4 p-3 rounded-xl ring-1 ring-transparent transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400 hover:bg-brand-50"
-            >
-              <img
-                src={bookImg}
-                alt=""
-                className="w-24 h-36 rounded-lg object-cover shrink-0"
-              />
-              <div className="flex flex-col">
-                <h4 className="font-semibold text-sm mb-1">
-                  The Time Has Come
-                </h4>
-                <p className="text-xs text-ink-500 mb-2">
-                  Lindbergh's Pharmacy is an Athens, Georgia, institution...
-                </p>
-                <p className="text-sm mb-3">
-                  <span className="font-bold">$ 27.89</span>{" "}
-                  <span className="text-ink-500 line-through text-xs">
-                    $ 30.99
-                  </span>
-                </p>
-                <button
-                  onClick={() => alert("Added to basket!")}
-                  className="mt-auto h-9 px-4 rounded-full bg-accent-500 text-white text-xs font-medium transition-colors hover:bg-accent-600 self-start"
-                >
-                  Add to basket
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="text-center mt-8">
-          <Link
-            to="/courses"
-            className="text-sm text-brand-500 font-medium hover:underline"
-          >
-            See all
-          </Link>
-        </div>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-6 pb-16">
-        <h2 className="text-3xl font-bold text-center mb-10">
-          Comprehensive{" "}
-          <span className="text-brand-500">
-            Parent & Child Software Solutions
-          </span>
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {software.map((_, i) => (
-            <div
-              key={i}
-              className="flex gap-4 p-3 rounded-xl ring-1 ring-transparent transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400 hover:bg-brand-50"
-            >
-              <img
-                src={bookImg}
-                alt=""
-                className="w-24 h-36 rounded-lg object-cover shrink-0"
-              />
-              <div className="flex flex-col">
-                <h4 className="font-semibold text-sm mb-1">
-                  The Time Has Come
-                </h4>
-                <p className="text-xs text-ink-500 mb-2">
-                  Lindbergh's Pharmacy is an Athens, Georgia, institution...
-                </p>
-                <p className="text-sm mb-3">
-                  <span className="font-bold">$ 27.89</span>{" "}
-                  <span className="text-ink-500 line-through text-xs">
-                    $ 30.99
-                  </span>
-                </p>
-                <button
-                  onClick={() => alert("Added to basket!")}
-                  className="mt-auto h-9 px-4 rounded-full bg-accent-500 text-white text-xs font-medium transition-colors hover:bg-accent-600 self-start"
-                >
-                  Add to basket
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <h2 className="text-3xl font-bold text-center mb-12">
-          Pricing <span className="text-brand-500">And Subscription</span>
-        </h2>
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-start">
-          {pricing.map((p) => (
-            <div
-              key={p.tag}
-              className={`relative rounded-2xl p-6 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl ${
-                p.featured ? "" : "ring-1 ring-ink-100"
-              }`}
-            >
-              {p.best && (
-                <span className="absolute top-6 right-6 text-[10px] font-semibold text-brand-500 border border-brand-500 px-2.5 py-0.5 rounded-full">
-                  BEST !
-                </span>
-              )}
-              <p
-                className={`flex items-center gap-1.5 text-sm font-medium mb-2 ${p.iconColor}`}
+      {!isSubscribed && (
+        <section className="max-w-7xl mx-auto px-6 py-12">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Pricing <span className="text-brand-500">And Subscription</span>
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-start">
+            {pricing.map((p) => (
+              <div
+                key={p.tag}
+                className={`relative rounded-2xl p-6 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl ${
+                  p.featured ? "" : "ring-1 ring-ink-100"
+                }`}
               >
-                {p.icon} {p.tag}
-              </p>
-              <div className="flex items-baseline gap-1 mb-6">
-                <span className="text-3xl font-bold">{p.price}</span>
-                <span className="text-xs uppercase text-ink-500">{p.per}</span>
-              </div>
-              <ul className="space-y-3 mb-6">
-                {p.features.map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-center gap-2.5 text-sm text-ink-700"
-                  >
-                    <span
-                      className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${p.checkBg} ${p.checkColor}`}
+                {p.best && (
+                  <span className="absolute top-6 right-6 text-[10px] font-semibold text-brand-500 border border-brand-500 px-2.5 py-0.5 rounded-full">
+                    BEST !
+                  </span>
+                )}
+                <p
+                  className={`flex items-center gap-1.5 text-sm font-medium mb-2 ${p.iconColor}`}
+                >
+                  {p.icon} {p.tag}
+                </p>
+                <div className="flex items-baseline gap-1 mb-6">
+                  <span className="text-3xl font-bold">{p.price}</span>
+                  <span className="text-xs uppercase text-ink-500">{p.per}</span>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  {p.features.map((f) => (
+                    <li
+                      key={f}
+                      className="flex items-center gap-2.5 text-sm text-ink-700"
                     >
-                      <FaCheck size={9} />
-                    </span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => navigate("/register")}
-                className={`w-full h-11 rounded-full font-medium text-sm transition-all hover:scale-[1.02] ${p.featured ? "bg-brand-500 text-white hover:bg-brand-600" : "border border-ink-300 text-ink-700 hover:border-accent-500 hover:text-accent-500"}`}
-              >
-                {p.btn}
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
-          <div>
-            <p className="text-[#2F327D] text-sm tracking-widest mb-3">
-              ————— TESTIMONIAL
-            </p>
-            <h2 className="text-[#2F327D] font-[Nunito Sans] text-4xl font-bold mb-4">
-              What They Say?
-            </h2>
-            <p className="text-[#2F327D] text-xl mb-3">
-              TOTC has got more than 100k positive ratings <br /> from our users
-              around the world.
-            </p>
-            <p className="text-[#2F327D]  text-xl mb-6">
-              Some of the students and teachers were <br /> greatly helped by
-              the Skilline.
-            </p>
-            <p className="text-[#2F327D] text-xl mb-6">
-              Are you too? Please give your assessment
-            </p>
-            <button
-              onClick={() => navigate("/courses")}
-              className="group flex items-center h-11 pl-6 pr-1 rounded-full border border-[#49bbbd] text-[#49bbbd] text-sm font-medium transition-all hover:bg-[#49bbbd]/10"
-            >
-              <span className="mr-4">Write your assessment</span>
-              <div className="w-9 h-9 rounded-full border border-[#49bbbd] flex items-center justify-center shrink-0 transition-transform group-hover:translate-x-0.5">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                      <span
+                        className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${p.checkBg} ${p.checkColor}`}
+                      >
+                        <FaCheck size= {9} />
+                      </span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => navigate("/register")}
+                  className={`w-full h-11 rounded-full font-medium text-sm transition-all hover:scale-[1.02] cursor-pointer ${
+                    p.featured
+                      ? "bg-brand-500 text-white hover:bg-brand-600"
+                      : "border border-ink-300 text-ink-700 hover:border-accent-500 hover:text-accent-500"
+                  }`}
                 >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
+                  {p.btn}
+                </button>
               </div>
-            </button>
+            ))}
           </div>
-          <div className="relative">
-            <img
-              src={testimonialImg}
-              alt=""
-              className="w-full rounded-2xl object-cover"
-            />
-            <div className="absolute -bottom-7 -right-4 bg-white rounded-xl p-4 shadow-lg max-w-xs">
-              <p className="text-xs text-ink-700 mb-2">
-                "Thank you so much for your help. It's exactly what I've been
-                looking for. You won't regret it. It really saves me time and
-                effort. TOTC is exactly what our business has been looking."
-              </p>
-              <p className="text-sm font-semibold">Gloria Rose</p>
-              <p className="text-[10px] text-ink-500">
-                ★★★★★ 12 reviews at Yelp
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <Footer />
 

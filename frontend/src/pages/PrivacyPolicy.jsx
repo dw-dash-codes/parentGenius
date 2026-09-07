@@ -57,8 +57,42 @@ export default function PrivacyPolicy() {
 
               <div>
                 <p className="font-bold text-ink-900">c.</p>
+                <p className="font-semibold text-ink-900">Payment &amp; Consultation Details</p>
+                <p>Billing metadata processed via secure third-party gateways</p>
+                <p>Appointment dates and booking notes for professional support sessions</p>
               </div>
             </div>
+          </div>
+
+          <div>
+            <h3 className="font-extrabold text-ink-900 mb-2">
+              2. How We Use Your Information
+            </h3>
+            <p className="mb-3">We use your data to:</p>
+            <div className="space-y-1.5 pl-1">
+              <p>Deliver personalized parenting courses and daily challenges</p>
+              <p>Facilitate community discussions and solution sharing</p>
+              <p>Process subscriptions and manage support bookings</p>
+              <p>Maintain platform security and prevent unauthorized access</p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-extrabold text-ink-900 mb-2">
+              3. Data Protection &amp; Children&apos;s Privacy
+            </h3>
+            <p className="mb-3">
+              ParentGenius is designed for parents and guardians. We do not knowingly collect personal identifiable information directly from children under the age of 13. All data provided regarding child development milestones is encrypted and used solely for personalized parent guidance.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-extrabold text-ink-900 mb-2">
+              4. Contact Us
+            </h3>
+            <p className="mb-3">
+              If you have any questions or requests regarding your personal data, please contact our privacy support team at privacy@parentgenius.com.
+            </p>
           </div>
         </div>
       </section>

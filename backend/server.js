@@ -9,6 +9,8 @@ import dotenv from 'dotenv';
 // 1. IMPORT YOUR NEW ROUTES HERE
 import authRoutes from './routes/authRoutes.js'; 
 import userRoutes from './routes/userRoutes.js';
+import communityRoutes from './routes/communityRoutes.js';
+import courseRoutes from './routes/courseRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -27,7 +29,10 @@ app.get('/api/health', (req,res) => {
 // 2. TELL EXPRESS TO USE YOUR NEW ROUTES HERE
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes); 
+app.use('/api/community', communityRoutes);
 
+
+app.use('/api/courses', courseRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

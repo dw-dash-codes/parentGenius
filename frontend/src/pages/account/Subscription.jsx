@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaGraduationCap, FaStar, FaCircleCheck } from "react-icons/fa6";
 import homeBanner from "../../assets/home_banner.jpg";
 import PaymentCompleteModal from "../../components/PaymentCompleteModal";
 
 export default function Subscription() {
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState("full");
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     nameOnCard: "",
     cardNumber: "",
@@ -18,9 +21,33 @@ export default function Subscription() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePayment = (e) => {
+  const handlePayment = async (e) => {
     e.preventDefault();
-    setShowModal(true);
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (token) {
+        await fetch("http://localhost:5000/api/users/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          body: JSON.stringify({ tier: "Tier 4" }),
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setShowModal(true);
+    }
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    navigate("/account");
   };
 
   return (
@@ -151,15 +178,10 @@ export default function Subscription() {
             <div className="space-y-2 pt-4">
               <button
                 type="button"
-                className="w-full h-11 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm shadow-md transition-all active:scale-95"
+                onClick={handlePayment}
+                className="w-full h-11 rounded-full bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm shadow-md transition-all active:scale-95 cursor-pointer"
               >
                 Upgrade Plan
-              </button>
-              <button
-                type="button"
-                className="w-full text-center text-xs font-bold text-brand-500 hover:underline py-1"
-              >
-                Start Free Trial
               </button>
             </div>
           </div>
@@ -189,11 +211,11 @@ export default function Subscription() {
 
               <ul className="space-y-3 mb-8">
                 {[
-                  "Unlimited access to over 100 expert-led mini-courses (no à la carte fees)",
+                  "Unlimited access to over 100 expert-led mini-courses",
                   "Early access to new courses and content drops",
                   "Priority support and onboarding help",
-                  "Ambassador Program discount ($10/mo, ($29/mo for this plan)",
-                  "Future features included (workshops, expert Q&A, printables, etc.)",
+                  "Ambassador Program discount",
+                  "Future features included",
                 ].map((feat, i) => (
                   <li
                     key={i}
@@ -212,15 +234,10 @@ export default function Subscription() {
             <div className="space-y-2 pt-4">
               <button
                 type="button"
-                className="w-full h-11 rounded-full bg-white text-brand-600 font-bold text-sm shadow-md transition-all hover:bg-ink-100 active:scale-95"
+                onClick={handlePayment}
+                className="w-full h-11 rounded-full bg-white text-brand-600 font-bold text-sm shadow-md transition-all hover:bg-ink-100 active:scale-95 cursor-pointer"
               >
                 Upgrade Plan
-              </button>
-              <button
-                type="button"
-                className="w-full text-center text-xs font-bold text-white hover:underline py-1"
-              >
-                Start Free Trial
               </button>
             </div>
           </div>
@@ -273,10 +290,7 @@ export default function Subscription() {
                       Pay monthly with Klarna
                     </span>
                     <span className="text-xs text-ink-500">
-                      From $106 per month for 12 months. Interest may apply.{" "}
-                      <button type="button" className="underline font-semibold">
-                        More info
-                      </button>
+                      From $106 per month for 12 months. Interest may apply.
                     </span>
                   </div>
                   <div
@@ -297,10 +311,11 @@ export default function Subscription() {
             <div className="pt-2 lg:pt-11">
               <button
                 type="button"
+                disabled={loading}
                 onClick={handlePayment}
-                className="w-full h-12 rounded-full bg-[#4caf50] hover:bg-[#429646] text-white font-bold text-sm shadow-md transition-all active:scale-95"
+                className="w-full h-12 rounded-full bg-[#4caf50] hover:bg-[#429646] text-white font-bold text-sm shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-50"
               >
-                Proceed The Payment
+                {loading ? "Processing..." : "Proceed The Payment"}
               </button>
             </div>
           </div>
@@ -334,7 +349,7 @@ export default function Subscription() {
                   name="cardNumber"
                   value={formData.cardNumber}
                   onChange={handleChange}
-                  placeholder="E.g. 123456-12121-789"
+                  placeholder="E.g. 1234-5678-9012-3456"
                   className="w-full h-12 rounded-xl border border-ink-200 px-4 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
                 />
               </div>
@@ -349,7 +364,7 @@ export default function Subscription() {
                     name="expiryDate"
                     value={formData.expiryDate}
                     onChange={handleChange}
-                    placeholder="E.g. 07/12"
+                    placeholder="E.g. 07/28"
                     className="w-full h-12 rounded-xl border border-ink-200 px-4 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
                   />
                 </div>
@@ -363,7 +378,7 @@ export default function Subscription() {
                     name="cvc"
                     value={formData.cvc}
                     onChange={handleChange}
-                    placeholder=""
+                    placeholder="123"
                     className="w-full h-12 rounded-xl border border-ink-200 px-4 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
                   />
                 </div>
@@ -372,9 +387,10 @@ export default function Subscription() {
           </div>
         </div>
       </section>
+
       <PaymentCompleteModal
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={handleModalClose}
       />
     </div>
   );

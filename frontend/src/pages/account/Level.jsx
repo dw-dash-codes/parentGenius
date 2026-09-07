@@ -1,7 +1,38 @@
+import { useState, useEffect } from "react";
 import { FaGraduationCap, FaAward } from "react-icons/fa6";
 import homeBanner from "../../assets/home_banner.jpg";
 
 export default function Level() {
+  const [userData, setUserData] = useState({
+    fullName: "User",
+    points: 0,
+    tier: "Tier 1",
+  });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("http://localhost:5000/api/users/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserData(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const tiers = [
     {
       tier: "Tier 1",
@@ -43,12 +74,15 @@ export default function Level() {
       tier: "Tier 5",
       title: "PARENT GENIUS",
       subtitle: "Top contributor, incredible mentor & excelled in every area. You've done it!",
-      range: "(1,000–1,999 points)",
+      range: "(2,000+ points)",
       bg: "bg-ink-900",
       icon: <FaAward className="text-yellow-400" size={26} />,
       border: "ring-4 ring-yellow-400",
     },
   ];
+
+  const currentPoints = userData.points || 0;
+  const progressPercent = Math.min(Math.max((currentPoints / 2000) * 100, 5), 100);
 
   return (
     <div className="min-h-screen bg-white">
@@ -68,28 +102,28 @@ export default function Level() {
           <div className="relative mb-3">
             <img
               src="https://placehold.co/120x120"
-              alt="Melissa Smith"
+              alt="Profile"
               className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover ring-4 ring-white shadow-xl"
             />
           </div>
 
           <h2 className="text-xl sm:text-2xl font-bold mb-1">
-            Lina
+            {userData.fullName || "User"}
           </h2>
 
           <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-white/90 mb-6">
-            <span>NEW</span>
+            <span>{userData.tier}</span>
             <FaGraduationCap size={15} />
           </div>
 
           <div className="bg-white/20 backdrop-blur-md rounded-full px-5 py-1.5 text-xs sm:text-sm font-bold text-white mb-8 shadow-sm">
-            199 Points
+            {currentPoints} Points
           </div>
 
           <div className="w-full max-w-3xl px-4 sm:px-10">
             <div className="relative">
               <div className="absolute top-[20px] sm:top-[24px] left-6 right-6 h-5 bg-[#182a20]/90 rounded-full overflow-hidden z-0 flex">
-                <div className="w-[24%] h-full bg-white" />
+                <div style={{ width: `${progressPercent}%` }} className="h-full bg-white transition-all duration-500" />
                 <div className="flex-1 h-full bg-[#1e3b2b]/90" />
               </div>
 

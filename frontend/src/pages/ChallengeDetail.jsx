@@ -1,5 +1,5 @@
-import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import TopicHero from "../components/TopicHero";
 import CompletionModal from "../components/CompletionModal";
 import { FaLightbulb } from "react-icons/fa6";
@@ -9,6 +9,47 @@ export default function ChallengeDetail() {
   const navigate = useNavigate();
   const [journal, setJournal] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleComplete = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (!token) {
+        setShowModal(true);
+        setLoading(false);
+        return;
+      }
+
+      // Backend API call to update user points and streak upon challenge completion
+      const response = await fetch("http://localhost:5000/api/users/complete-challenge", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          dayNumber: day,
+          journalText: journal,
+          pointsEarned: 100,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedData = await response.json();
+        
+        // Update local storage user details if available
+        const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+        const currentUser = JSON.parse(storage.getItem("user") || "{}");
+        storage.setItem("user", JSON.stringify({ ...currentUser, ...updatedData }));
+      }
+    } catch (error) {
+      console.error("Error completing challenge:", error);
+    } finally {
+      setLoading(false);
+      setShowModal(true);
+    }
+  };
 
   return (
     <div>
@@ -19,17 +60,12 @@ export default function ChallengeDetail() {
       />
 
       <div className="max-w-3xl mx-auto px-6 py-12 space-y-5">
-
         <div className="bg-green-50 rounded-2xl p-6 ring-1 ring-green-100">
           <h2 className="text-xl font-bold text-accent-600 text-center mb-4">
             Why It Matters
           </h2>
           <p className="text-ink-700 text-center leading-relaxed">
-            KaiB was amazing with our cats!! This was our first time using a
-            pet-sitting service, so we were naturally quite anxious. We took a
-            chance on Kai and completely lucked out! We booked Kai to come
-            twice a day for three days. Kai spent a considerable amount of time
-            playing and engaging with our cats.
+            Maintaining a calm demeanor in front of your children teaches emotional regulation. When you model composure, they learn how to handle their own big feelings effectively.
           </p>
         </div>
 
@@ -64,10 +100,12 @@ export default function ChallengeDetail() {
 
         <div className="flex justify-center pt-4">
           <button
-            onClick={() => setShowModal(true)}
-            className="h-14 px-16 rounded-full bg-accent-500 text-white font-semibold text-lg transition-colors hover:bg-accent-600"
+            type="button"
+            disabled={loading}
+            onClick={handleComplete}
+            className="h-14 px-16 rounded-full bg-accent-500 hover:bg-accent-600 text-white font-semibold text-lg transition-colors cursor-pointer disabled:opacity-50"
           >
-            Mark as Complete
+            {loading ? "Processing..." : "Mark as Complete"}
           </button>
         </div>
       </div>

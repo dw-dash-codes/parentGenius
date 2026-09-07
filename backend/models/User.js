@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    city: { type: String, default: "" },
+    zipCode: { type: String, default: "" },
+    countryCode: { type: String, default: "+1" },
     resetPasswordOtp: { type: String },
     resetPasswordExpires: { type: Date },
     // Onboarding Data Fields

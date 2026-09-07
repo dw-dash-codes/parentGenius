@@ -1,12 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import homeBanner from "../../assets/home_banner.jpg";
 
 export default function ChangePassword() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,8 +21,52 @@ export default function ChangePassword() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage({ type: "", text: "" });
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      setMessage({ type: "error", text: "New passwords do not match." });
+      return;
+    }
+
+    if (formData.newPassword.length < 6) {
+      setMessage({ type: "error", text: "Password must be at least 6 characters long." });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+      const response = await fetch("http://localhost:5000/api/users/change-password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          currentPassword: formData.currentPassword,
+          newPassword: formData.newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage({ type: "success", text: "Password changed successfully! Redirecting..." });
+        setTimeout(() => {
+          navigate("/account");
+        }, 1200);
+      } else {
+        setMessage({ type: "error", text: data.message || "Failed to change password." });
+      }
+    } catch (error) {
+      setMessage({ type: "error", text: "Network error. Please try again." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,9 +88,15 @@ export default function ChangePassword() {
             You will be logged out of all sessions except this one to protect your account if anyone is trying to gain access.
           </p>
 
-          <p className="text-sm sm:text-base text-white/90 leading-relaxed max-w-xl mb-10">
+          <p className="text-sm sm:text-base text-white/90 leading-relaxed max-w-xl mb-8">
             Your password must be at least 6 characters and should include a combination of numbers, letters and special characters.
           </p>
+
+          {message.text && (
+            <div className={`mb-6 px-6 py-3 rounded-xl text-sm font-medium w-full max-w-md text-center border ${message.type === 'success' ? 'bg-green-50 text-green-600 border-green-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
+              {message.text}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="w-full max-w-md text-left space-y-6">
             <div>
@@ -89,9 +144,10 @@ export default function ChangePassword() {
             <div className="flex justify-center pt-4">
               <button
                 type="submit"
-                className="w-48 h-12 rounded-full bg-[#4ba35a] hover:bg-[#3f8f4c] text-white font-bold text-base shadow-lg transition-all active:scale-95"
+                disabled={loading}
+                className="w-48 h-12 rounded-full bg-[#4ba35a] hover:bg-[#3f8f4c] text-white font-bold text-base shadow-lg transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
               >
-                Save
+                {loading ? "Saving..." : "Save"}
               </button>
             </div>
           </form>

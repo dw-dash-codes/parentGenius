@@ -41,8 +41,9 @@ export default function TermsConditions() {
             </p>
             <div className="space-y-1.5 pl-1">
               <p>Use the app only for personal, non-commercial purposes</p>
-              <p>Provide accurate account information</p>
-              <p>Not misuse, copy, or redistribute any content or tools Keep your login credentials secure</p>
+              <p>Provide accurate and up-to-date account information</p>
+              <p>Not misuse, copy, or redistribute any content or tools</p>
+              <p>Keep your login credentials secure at all times</p>
             </div>
           </div>
 
@@ -51,21 +52,39 @@ export default function TermsConditions() {
               2. Subscription &amp; Payment
             </h3>
             <p className="mb-3">
-              ParentGenius offers a free trial followed by a paid subscription. Details:
+              ParentGenius offers access tiers including free content and premium subscriptions. Details:
             </p>
             <div className="space-y-1.5 pl-1">
-              <p>Subscriptions auto-renew monthly unless canceled</p>
-              <p>You may cancel anytime from within your account</p>
-              <p>All payments are processed securely via third-party platforms (e.g., Stripe, Apple, Google)</p>
+              <p>Subscriptions auto-renew according to your chosen billing cycle unless canceled</p>
+              <p>You may cancel anytime from within your account settings</p>
+              <p>All payments are processed securely via third-party platforms</p>
             </div>
           </div>
 
           <div>
             <h3 className="font-extrabold text-ink-900 mb-2">
-              3. Intellectual Property
+              3. Community Guidelines &amp; User Content
             </h3>
             <p className="mb-3">
-              All content within the app—including courses, guides, designs, and trademarks—is the property of ParentGenius or its licensors. You may not reproduce or distribute any material without written permission.
+              Users are solely responsible for solutions, comments, and ratings shared in community forums. You agree not to post harmful, abusive, or misleading advice. ParentGenius reserves the right to moderate or remove content that violates community standards.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-extrabold text-ink-900 mb-2">
+              4. Professional Support &amp; Medical Disclaimer
+            </h3>
+            <p className="mb-3">
+              The educational materials, community answers, and courses provided by ParentGenius are for informational purposes only and do not constitute formal medical or psychiatric diagnoses. Consultation services connect users with independent specialists.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-extrabold text-ink-900 mb-2">
+              5. Intellectual Property
+            </h3>
+            <p className="mb-3">
+              All content within the app—including courses, guides, designs, and trademarks—is the property of ParentGenius or its licensors. You may not reproduce or distribute any material without prior written permission.
             </p>
           </div>
         </div>

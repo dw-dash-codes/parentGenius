@@ -1,67 +1,152 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import homeBanner from "../assets/home_banner.jpg";
 import bookImg from "../assets/book_img.png";
 
-const AMAZON_BOOKS = Array.from({ length: 6 }, (_, i) => ({
-  id: i + 1,
-  title: "The Time Has Come",
-  desc: "Lindbergh's Pharmacy is an Athens, Georgia, institution...",
-  price: "$ 27.89",
-  oldPrice: "$ 30.99",
-}));
+const DEFAULT_AMAZON_BOOKS = [
+  {
+    id: "amz-1",
+    title: "The Whole-Brain Child",
+    desc: "12 Revolutionary Strategies to Nurture Your Child's Developing Mind.",
+    price: "$ 18.99",
+    oldPrice: "$ 24.99",
+    image: bookImg,
+    category: "amazon",
+  },
+  {
+    id: "amz-2",
+    title: "Good Inside: A Guide to Becoming the Parent You Want to Be",
+    desc: "Practical strategies for parenting and emotional connection.",
+    price: "$ 22.50",
+    oldPrice: "$ 28.00",
+    image: bookImg,
+    category: "amazon",
+  },
+  {
+    id: "amz-3",
+    title: "No-Drama Discipline",
+    desc: "The Whole-Brain Way to Calm the Chaos and Nurture Your Child's Mind.",
+    price: "$ 16.95",
+    oldPrice: "$ 21.00",
+    image: bookImg,
+    category: "amazon",
+  },
+];
 
-const AFFILIATE_BOOKS = Array.from({ length: 6 }, (_, i) => ({
-  id: i + 7,
-  title: "The Time Has Come",
-  desc: "Lindbergh's Pharmacy is an Athens, Georgia, institution...",
-  price: "$ 27.89",
-  oldPrice: "$ 30.99",
-}));
+const DEFAULT_AFFILIATE_BOOKS = [
+  {
+    id: "aff-1",
+    title: "How to Talk So Kids Will Listen & Listen So Kids Will Talk",
+    desc: "The ultimate parenting masterclass on clear communication.",
+    price: "$ 15.49",
+    oldPrice: "$ 19.99",
+    image: bookImg,
+    category: "affiliate",
+  },
+  {
+    id: "aff-2",
+    title: "Peaceful Parent, Happy Kids",
+    desc: "How to Stop Yelling and Start Connecting with your children.",
+    price: "$ 17.20",
+    oldPrice: "$ 22.00",
+    image: bookImg,
+    category: "affiliate",
+  },
+  {
+    id: "aff-3",
+    title: "The Explosive Child",
+    desc: "A New Approach for Understanding and Parenting Easily Frustrated Kids.",
+    price: "$ 19.99",
+    oldPrice: "$ 25.00",
+    image: bookImg,
+    category: "affiliate",
+  },
+];
 
 export default function Resources() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [amazonBooks, setAmazonBooks] = useState(DEFAULT_AMAZON_BOOKS);
+  const [affiliateBooks, setAffiliateBooks] = useState(DEFAULT_AFFILIATE_BOOKS);
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/resources");
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            const dynamicAmazon = data.filter((item) => item.category === "amazon");
+            const dynamicAffiliate = data.filter((item) => item.category === "affiliate");
+
+            if (dynamicAmazon.length > 0) {
+              setAmazonBooks([...dynamicAmazon, ...DEFAULT_AMAZON_BOOKS]);
+            }
+            if (dynamicAffiliate.length > 0) {
+              setAffiliateBooks([...dynamicAffiliate, ...DEFAULT_AFFILIATE_BOOKS]);
+            }
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchResources();
+  }, []);
 
   const filterBooks = (books) =>
-    books.filter((b) => b.title.toLowerCase().includes(search.toLowerCase()));
+    books.filter(
+      (b) =>
+        b.title.toLowerCase().includes(search.toLowerCase()) ||
+        (b.desc && b.desc.toLowerCase().includes(search.toLowerCase()))
+    );
 
-  const BookCard = ({ book }) => (
-    <div
-      onClick={() => navigate(`/resources/${book.id}`)}
-      className="flex gap-4 p-3 rounded-xl cursor-pointer ring-1 ring-transparent transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400 hover:bg-brand-50"
-    >
-      <img
-        src={bookImg}
-        alt={book.title}
-        className="w-24 h-36 rounded-lg object-cover shrink-0"
-      />
-      <div className="flex flex-col">
-        <h4 className="font-semibold text-sm mb-1">{book.title}</h4>
-        <p className="text-xs text-ink-500 mb-2">{book.desc}</p>
-        <p className="text-sm mb-3">
-          <span className="font-bold">{book.price}</span>{" "}
-          <span className="text-ink-500 line-through text-xs">
-            {book.oldPrice}
-          </span>
-        </p>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            alert("Added to basket!");
-          }}
-          className="mt-auto h-9 px-4 rounded-full bg-accent-500 text-white text-xs font-medium inline-flex items-center gap-1.5 self-start transition-colors hover:bg-accent-600"
-        >
-          <FaCartShopping size={11} /> Add to basket
-        </button>
+  const BookCard = ({ book }) => {
+    const bookId = book._id || book.id;
+    return (
+      <div
+        onClick={() => navigate(`/resources/${bookId}`)}
+        className="flex gap-4 p-3 rounded-xl cursor-pointer ring-1 ring-transparent transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400 hover:bg-brand-50 bg-white"
+      >
+        <img
+          src={book.image || bookImg}
+          alt={book.title}
+          className="w-24 h-36 rounded-lg object-cover shrink-0"
+        />
+        <div className="flex flex-col justify-between flex-1">
+          <div>
+            <h4 className="font-semibold text-sm mb-1 text-ink-900 line-clamp-1">{book.title}</h4>
+            <p className="text-xs text-ink-500 mb-2 line-clamp-2">{book.desc}</p>
+          </div>
+          <div>
+            <p className="text-sm mb-3">
+              <span className="font-bold text-ink-900">{book.price}</span>{" "}
+              {book.oldPrice && (
+                <span className="text-ink-500 line-through text-xs ml-1">
+                  {book.oldPrice}
+                </span>
+              )}
+            </p>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                alert(`Added "${book.title}" to basket!`);
+              }}
+              className="h-9 px-4 rounded-full bg-accent-500 text-white text-xs font-medium inline-flex items-center gap-1.5 self-start transition-colors hover:bg-accent-600 cursor-pointer"
+            >
+              <FaCartShopping size={11} /> Add to basket
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
-  const amazonResults = filterBooks(AMAZON_BOOKS);
-  const affiliateResults = filterBooks(AFFILIATE_BOOKS);
+  const amazonResults = filterBooks(amazonBooks);
+  const affiliateResults = filterBooks(affiliateBooks);
 
   return (
     <div>
@@ -97,13 +182,13 @@ export default function Resources() {
       </div>
 
       <section className="max-w-7xl mx-auto px-6 py-10">
-        <h2 className="text-xl sm:text-2xl font-bold mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold mb-6 text-ink-900">
           Books (Order from Amazon)
         </h2>
         {amazonResults.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {amazonResults.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <BookCard key={book._id || book.id} book={book} />
             ))}
           </div>
         ) : (
@@ -112,13 +197,13 @@ export default function Resources() {
       </section>
 
       <section className="max-w-7xl mx-auto px-6 pb-16">
-        <h2 className="text-xl sm:text-2xl font-bold mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold mb-6 text-ink-900">
           Books (Affiliate links)
         </h2>
         {affiliateResults.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {affiliateResults.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <BookCard key={book._id || book.id} book={book} />
             ))}
           </div>
         ) : (

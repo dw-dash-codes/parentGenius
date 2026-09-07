@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaCircleUser,
@@ -16,6 +16,45 @@ import homeBanner from "../../assets/home_banner.jpg";
 export default function Account() {
   const navigate = useNavigate();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [userData, setUserData] = useState({
+    fullName: "",
+    points: 0,
+    streakDays: 0,
+    tier: "Tier 1",
+  });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("http://localhost:5000/api/users/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserData(data);
+          
+          const storage = localStorage.getItem("user") ? localStorage : sessionStorage;
+          const currentUser = JSON.parse(storage.getItem("user") || "{}");
+          storage.setItem("user", JSON.stringify({ ...currentUser, ...data }));
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const localUser = JSON.parse(localStorage.getItem("user") || "{}");
+    if (localUser.fullName) {
+      setUserData(localUser);
+    }
+
+    fetchUserData();
+  }, []);
 
   const accountCards = [
     {
@@ -112,24 +151,24 @@ export default function Account() {
           </div>
 
           <h2 className="text-xl sm:text-2xl font-bold mb-8">
-            Lina
+            {userData.fullName || "User"}
           </h2>
 
           <div className="grid grid-cols-3 gap-8 sm:gap-16 text-center">
             <div>
-              <p className="text-3xl sm:text-4xl font-black">1000</p>
+              <p className="text-3xl sm:text-4xl font-black">{userData.points}</p>
               <p className="text-xs sm:text-sm font-medium text-white/85 mt-0.5">
                 Points
               </p>
             </div>
             <div>
-              <p className="text-3xl sm:text-4xl font-black">Day 2</p>
+              <p className="text-3xl sm:text-4xl font-black">Day {userData.streakDays}</p>
               <p className="text-xs sm:text-sm font-medium text-white/85 mt-0.5">
-                Challenges
+                Streak
               </p>
             </div>
             <div>
-              <p className="text-3xl sm:text-4xl font-black">04</p>
+              <p className="text-3xl sm:text-4xl font-black">{userData.tier.replace("Tier ", "0")}</p>
               <p className="text-xs sm:text-sm font-medium text-white/85 mt-0.5">
                 Tier
               </p>

@@ -1,63 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaBookmark, FaStar } from "react-icons/fa6";
 import homeBanner from "../../assets/home_banner.jpg";
-import courseImg from "../../assets/home_course_img.png";
 
 export default function Bookmarks() {
-  const [bookmarks, setBookmarks] = useState([
-    {
-      id: 1,
-      category: "Chores",
-      title: "Fun Chores for Kids",
-      description: "Teaching kids to do chores builds responsibility, confidence.....",
-      rating: "4.2",
-      image: courseImg,
-      bookmarked: true,
-    },
-    {
-      id: 2,
-      category: "Chores",
-      title: "Fun Chores for Kids",
-      description: "Teaching kids to do chores builds responsibility, confidence.....",
-      rating: "4.2",
-      image: courseImg,
-      bookmarked: true,
-    },
-    {
-      id: 3,
-      category: "Chores",
-      title: "Fun Chores for Kids",
-      description: "Teaching kids to do chores builds responsibility, confidence.....",
-      rating: "4.2",
-      image: courseImg,
-      bookmarked: true,
-    },
-    {
-      id: 4,
-      category: "Chores",
-      title: "Fun Chores for Kids",
-      description: "Teaching kids to do chores builds responsibility, confidence.....",
-      rating: "4.2",
-      image: courseImg,
-      bookmarked: false,
-    },
-    {
-      id: 5,
-      category: "Chores",
-      title: "Fun Chores for Kids",
-      description: "Teaching kids to do chores builds responsibility, confidence.....",
-      rating: "4.2",
-      image: courseImg,
-      bookmarked: false,
-    },
-  ]);
+  const [bookmarks, setBookmarks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const toggleBookmark = (id) => {
-    setBookmarks((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, bookmarked: !item.bookmarked } : item
-      )
-    );
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("http://localhost:5000/api/users/bookmarks", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setBookmarks(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookmarks();
+  }, []);
+
+  const toggleBookmark = async (id) => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      
+      const response = await fetch(`http://localhost:5000/api/users/bookmarks/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        setBookmarks((prev) => prev.filter((item) => item._id !== id && item.id !== id));
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -75,52 +66,55 @@ export default function Bookmarks() {
             Bookmarks
           </h1>
 
-          <div className="w-full space-y-4">
-            {bookmarks.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-3xl p-3 sm:p-4 shadow-md flex items-center justify-between gap-4 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5"
-              >
-                <div className="flex items-center gap-4 sm:gap-6 min-w-0">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-24 h-24 sm:w-32 sm:h-28 rounded-2xl object-cover shrink-0"
-                  />
+          {loading ? (
+            <p className="text-white text-center text-lg mt-10">Loading bookmarks...</p>
+          ) : bookmarks.length === 0 ? (
+            <p className="text-white/80 text-center text-base mt-10">No bookmarks found.</p>
+          ) : (
+            <div className="w-full space-y-4">
+              {bookmarks.map((item) => (
+                <div
+                  key={item._id || item.id}
+                  className="bg-white rounded-3xl p-3 sm:p-4 shadow-md flex items-center justify-between gap-4 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5"
+                >
+                  <div className="flex items-center gap-4 sm:gap-6 min-w-0">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-24 h-24 sm:w-32 sm:h-28 rounded-2xl object-cover shrink-0"
+                    />
 
-                  <div className="min-w-0 py-1">
-                    <span className="text-xs sm:text-sm font-bold text-accent-500 block mb-1">
-                      {item.category}
-                    </span>
+                    <div className="min-w-0 py-1">
+                      <span className="text-xs sm:text-sm font-bold text-accent-500 block mb-1">
+                        {item.category}
+                      </span>
 
-                    <h3 className="text-base sm:text-xl font-extrabold text-ink-900 truncate mb-1">
-                      {item.title}
-                    </h3>
+                      <h3 className="text-base sm:text-xl font-extrabold text-ink-900 truncate mb-1">
+                        {item.title}
+                      </h3>
 
-                    <p className="text-xs sm:text-sm text-ink-300 truncate mb-2">
-                      {item.description}
-                    </p>
+                      <p className="text-xs sm:text-sm text-ink-300 truncate mb-2">
+                        {item.description}
+                      </p>
 
-                    <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-ink-900">
-                      <FaStar className="text-yellow-400" size={15} />
-                      <span>{item.rating}</span>
+                      <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-ink-900">
+                        <FaStar className="text-yellow-400" size={15} />
+                        <span>{item.rating}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <button
-                  type="button"
-                  onClick={() => toggleBookmark(item.id)}
-                  className="p-3 text-brand-500 transition-transform active:scale-90 hover:opacity-80 shrink-0 self-start sm:self-center"
-                >
-                  <FaBookmark
-                    size={20}
-                    className={item.bookmarked ? "text-brand-500" : "text-ink-300"}
-                  />
-                </button>
-              </div>
-            ))}
-          </div>
+                  <button
+                    type="button"
+                    onClick={() => toggleBookmark(item._id || item.id)}
+                    className="p-3 text-brand-500 transition-transform active:scale-90 hover:opacity-80 shrink-0 self-start sm:self-center cursor-pointer"
+                  >
+                    <FaBookmark size={20} className="text-brand-500" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { FaBookOpen, FaClock } from "react-icons/fa6";
 import courseImg from "../assets/home_course_img.png";
@@ -31,37 +31,72 @@ const TOPICS = [
   "Parent Burnout & Self-Care",
 ];
 
-const CONTINUE = [
-  {
-    title: "AWS Certified Solutions Architect",
-    lesson: "Lesson 5 of 7",
-    progress: 70,
-  },
-  {
-    title: "AWS Certified Solutions Architect",
-    lesson: "Lesson 5 of 7",
-    progress: 70,
-  },
-  {
-    title: "AWS Certified Solutions Architect",
-    lesson: "Lesson 5 of 7",
-    progress: 70,
-  },
-];
-
 export default function Courses() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const searchQueryParam = searchParams.get("search") || "";
+
   const [selectedAge, setSelectedAge] = useState(null);
   const [selectedTopics, setSelectedTopics] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchQueryParam);
+  
+  const [courses, setCourses] = useState([]);
+  const [continueCourses, setContinueCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const recommended = Array.from({ length: 12 });
+  // Fetch courses and user progress from backend
+  useEffect(() => {
+    const fetchCoursesData = async () => {
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        
+        // Fetch all available courses
+        const resCourses = await fetch("http://localhost:5000/api/courses");
+        if (resCourses.ok) {
+          const data = await resCourses.json();
+          setCourses(data);
+        }
+
+        // Fetch user's in-progress courses if logged in
+        if (token) {
+          const resProgress = await fetch("http://localhost:5000/api/users/progress", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (resProgress.ok) {
+            const progressData = await resProgress.json();
+            setContinueCourses(progressData);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching courses data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCoursesData();
+  }, []);
 
   const toggleTopic = (topic) => {
     setSelectedTopics((prev) =>
       prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
     );
   };
+
+  const filteredCourses = courses.filter((c) => {
+    const matchSearch =
+      !search || 
+      c.title.toLowerCase().includes(search.toLowerCase()) || 
+      (c.description && c.description.toLowerCase().includes(search.toLowerCase()));
+    
+    const matchTopic =
+      selectedTopics.length === 0 || selectedTopics.includes(c.topic);
+    
+    const matchAge =
+      !selectedAge || c.ageGroup === selectedAge;
+
+    return matchSearch && matchTopic && matchAge;
+  });
 
   return (
     <div>
@@ -95,7 +130,7 @@ export default function Courses() {
                   onClick={() =>
                     setSelectedAge(selectedAge === age ? null : age)
                   }
-                  className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
+                  className={`text-xs px-3 py-1.5 rounded-lg border transition-colors cursor-pointer ${
                     selectedAge === age
                       ? "bg-brand-500 text-white border-brand-500"
                       : "bg-white text-ink-700 border-ink-200 hover:border-brand-400"
@@ -119,7 +154,7 @@ export default function Courses() {
                     type="checkbox"
                     checked={selectedTopics.includes(topic)}
                     onChange={() => toggleTopic(topic)}
-                    className="w-4 h-4 accent-brand-500"
+                    className="w-4 h-4 accent-brand-500 cursor-pointer"
                   />
                   {topic}
                 </label>
@@ -139,96 +174,102 @@ export default function Courses() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && search.trim()) {
-                    const slug = search
-                      .trim()
-                      .toLowerCase()
-                      .replace(/[^a-z0-9]+/g, "-")
-                      .replace(/^-|-$/g, "");
-                    navigate(`/courses/topic/${slug}`);
-                  }
-                }}
                 placeholder="Search for Courses"
                 className="w-full h-12 rounded-xl bg-ink-50 pl-11 pr-4 text-sm outline-none ring-1 ring-ink-100 focus:ring-brand-500"
               />
             </div>
           </div>
-          <h2 className="text-2xl font-bold mb-4">
-            Welcome back, ready for your next lesson?
-          </h2>
-          <div className="bg-brand-50 rounded-2xl p-4 mb-10">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {CONTINUE.map((c, i) => (
-                <div
-                  key={i}
-                  onClick={() => navigate(`/courses/${i + 1}`)}
-                  className="bg-white rounded-2xl p-3 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-                >
-                  <img
-                    src={courseImg}
-                    alt=""
-                    className="w-full h-36 rounded-xl object-cover mb-3"
-                  />
-                  <h4 className="font-semibold text-sm mb-2">{c.title}</h4>
-                  <div className="flex items-center gap-2 mb-2">
-                    <img
-                      src="https://placehold.co/24x24"
-                      alt=""
-                      className="w-6 h-6 rounded-full"
-                    />
-                    <span className="text-xs text-ink-500">Lina</span>
-                  </div>
-                  <div className="h-1.5 w-full rounded-full bg-ink-100 mb-1">
+
+          {continueCourses.length > 0 && (
+            <>
+              <h2 className="text-2xl font-bold mb-4">
+                Welcome back, ready for your next lesson?
+              </h2>
+              <div className="bg-brand-50 rounded-2xl p-4 mb-10">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {continueCourses.map((c) => (
                     <div
-                      className="h-full rounded-full bg-accent-500"
-                      style={{ width: `${c.progress}%` }}
-                    />
-                  </div>
-                  <p className="text-[11px] text-ink-500 text-right">
-                    {c.lesson}
-                  </p>
+                      key={c._id || c.id}
+                      onClick={() => navigate(`/courses/${c._id || c.id}`)}
+                      className="bg-white rounded-2xl p-3 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                    >
+                      <img
+                        src={c.image || courseImg}
+                        alt=""
+                        className="w-full h-36 rounded-xl object-cover mb-3"
+                      />
+                      <h4 className="font-semibold text-sm mb-2">{c.title}</h4>
+                      <div className="flex items-center gap-2 mb-2">
+                        <img
+                          src="https://placehold.co/24x24"
+                          alt=""
+                          className="w-6 h-6 rounded-full"
+                        />
+                        <span className="text-xs text-ink-500">{c.instructor || "Expert"}</span>
+                      </div>
+                      <div className="h-1.5 w-full rounded-full bg-ink-100 mb-1">
+                        <div
+                          className="h-full rounded-full bg-accent-500"
+                          style={{ width: `${c.progress || 0}%` }}
+                        />
+                      </div>
+                      <p className="text-[11px] text-ink-500 text-right">
+                        {c.lessonInfo || "Lesson 1 of 5"}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            </>
+          )}
 
           <h2 className="text-2xl font-bold mb-6">Recommended for you</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-            {recommended.map((_, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-2xl p-3 ring-1 ring-ink-100 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400"
-              >
-                <img
-                  src={courseImg}
-                  alt=""
-                  className="w-full h-40 rounded-xl object-cover mb-3"
-                />
-                <div className="flex items-center gap-1.5 text-xs text-ink-500 mb-2 px-1">
-                  <span className="flex items-center gap-1">
-                    <FaBookOpen size={11} /> Parenting Guidance
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <FaClock size={11} /> 3 Month
-                  </span>
-                </div>
-                <h4 className="font-semibold mb-2 px-1 text-sm">
-                  Step-by-Step Parenting and Children Guidance
-                </h4>
-                <p className="text-xs text-ink-500 mb-4 px-1">
-                  Lorem ipsum dolor sit amet, consectetur adipising elit, sed do
-                  eiusmod tempor
-                </p>
-                <button
-                  onClick={() => navigate(`/courses/${i + 1}`)}
-                  className="w-full h-10 rounded-full bg-accent-500 text-white text-sm font-medium transition-colors hover:bg-accent-600"
-                >
-                  View Detail
-                </button>
-              </div>
-            ))}
-          </div>
+          
+          {loading ? (
+            <p className="text-ink-500 text-center py-10">Loading courses...</p>
+          ) : filteredCourses.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+              {filteredCourses.map((c) => {
+                const courseId = c._id || c.id;
+                return (
+                  <div
+                    key={courseId}
+                    className="bg-white rounded-2xl p-3 ring-1 ring-ink-100 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-accent-400 flex flex-col justify-between"
+                  >
+                    <div>
+                      <img
+                        src={c.image || courseImg}
+                        alt=""
+                        className="w-full h-40 rounded-xl object-cover mb-3"
+                      />
+                      <div className="flex items-center gap-1.5 text-xs text-ink-500 mb-2 px-1">
+                        <span className="flex items-center gap-1">
+                          <FaBookOpen size={11} /> {c.topic || "Parenting"}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <FaClock size={11} /> {c.duration || "3 Months"}
+                        </span>
+                      </div>
+                      <h4 className="font-semibold mb-2 px-1 text-sm">
+                        {c.title}
+                      </h4>
+                      <p className="text-xs text-ink-500 mb-4 px-1 line-clamp-2">
+                        {c.description || "Learn practical tools to manage your daily routines and child behavior efficiently."}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => navigate(`/courses/${courseId}`)}
+                      className="w-full h-10 rounded-full bg-accent-500 text-white text-sm font-medium transition-colors hover:bg-accent-600 cursor-pointer"
+                    >
+                      View Detail
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-ink-500 py-6">No courses found matching your criteria.</p>
+          )}
         </main>
       </div>
     </div>

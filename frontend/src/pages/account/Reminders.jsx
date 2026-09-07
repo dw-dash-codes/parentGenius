@@ -1,22 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import homeBanner from "../../assets/home_banner.jpg";
 
 export default function Reminders() {
-  const [reminders, setReminders] = useState([
-    { id: 1, title: "Challenges", description: "Remind yourself to complete your daily challenges to earn more points", enabled: false },
-    { id: 2, title: "Challenges", description: "Remind yourself to complete your daily challenges to earn more points", enabled: true },
-    { id: 3, title: "Challenges", description: "Remind yourself to complete your daily challenges to earn more points", enabled: false },
-    { id: 4, title: "Challenges", description: "Remind yourself to complete your daily challenges to earn more points", enabled: true },
-    { id: 5, title: "Challenges", description: "Remind yourself to complete your daily challenges to earn more points", enabled: false },
-    { id: 6, title: "Challenges", description: "Remind yourself to complete your daily challenges to earn more points", enabled: true },
-  ]);
+  const [reminders, setReminders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const toggleReminder = (id) => {
-    setReminders((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, enabled: !item.enabled } : item
-      )
-    );
+  useEffect(() => {
+    const fetchReminders = async () => {
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("http://localhost:5000/api/users/reminders", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setReminders(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReminders();
+  }, []);
+
+  const toggleReminder = async (id, currentStatus) => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      
+      const response = await fetch(`http://localhost:5000/api/users/reminders/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ enabled: !currentStatus }),
+      });
+
+      if (response.ok) {
+        setReminders((prev) =>
+          prev.map((item) =>
+            (item._id === id || item.id === id) ? { ...item, enabled: !item.enabled } : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -34,37 +71,43 @@ export default function Reminders() {
             Reminders
           </h1>
 
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            {reminders.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-2xl p-5 sm:p-6 shadow-md flex items-start justify-between gap-4 transition-all duration-200 hover:shadow-lg"
-              >
-                <div className="min-w-0">
-                  <h3 className="text-base sm:text-lg font-bold text-brand-500 mb-1">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-ink-300 leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => toggleReminder(item.id)}
-                  className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-200 cursor-pointer shrink-0 mt-0.5 ${
-                    item.enabled ? "bg-accent-500" : "bg-ink-300"
-                  }`}
+          {loading ? (
+            <p className="text-white text-center text-lg mt-10">Loading reminders...</p>
+          ) : reminders.length === 0 ? (
+            <p className="text-white/80 text-center text-base mt-10">No reminders available.</p>
+          ) : (
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              {reminders.map((item) => (
+                <div
+                  key={item._id || item.id}
+                  className="bg-white rounded-2xl p-5 sm:p-6 shadow-md flex items-start justify-between gap-4 transition-all duration-200 hover:shadow-lg"
                 >
-                  <div
-                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ${
-                      item.enabled ? "translate-x-6" : "translate-x-0"
+                  <div className="min-w-0">
+                    <h3 className="text-base sm:text-lg font-bold text-brand-500 mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-ink-300 leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleReminder(item._id || item.id, item.enabled)}
+                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors duration-200 cursor-pointer shrink-0 mt-0.5 ${
+                      item.enabled ? "bg-accent-500" : "bg-ink-300"
                     }`}
-                  />
-                </button>
-              </div>
-            ))}
-          </div>
+                  >
+                    <div
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ${
+                        item.enabled ? "translate-x-6" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>

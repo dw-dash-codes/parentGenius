@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { FaPlay, FaEye, FaCartShopping } from "react-icons/fa6";
 import bookImg from "../assets/book_img.png";
@@ -31,7 +32,7 @@ function ParentContent() {
               <p className="text-sm mb-3"><span className="font-bold">$ 27.89</span> <span className="text-ink-500 line-through text-xs">$ 30.99</span></p>
               <button
                 onClick={() => alert("Added to basket!")}
-                className="mt-auto h-9 px-4 rounded-full bg-accent-500 text-white text-xs font-medium inline-flex items-center gap-1.5 self-start transition-colors hover:bg-accent-600"
+                className="mt-auto h-9 px-4 rounded-full bg-accent-500 text-white text-xs font-medium inline-flex items-center gap-1.5 self-start transition-colors hover:bg-accent-600 cursor-pointer"
               >
                 <FaCartShopping size={11} /> Add to basket
               </button>
@@ -60,8 +61,8 @@ function ParentContent() {
                   <span>▦ Parenting Guidance</span><span>◷ 3 Month</span>
                 </div>
                 <h4 className="font-semibold mb-2 px-1">Step-by-Step Parenting and Children Guidance</h4>
-                <p className="text-xs text-ink-500 mb-4 px-1">Lorem ipsum dolor sit amet, consectetur adipising elit, sed do eiusmod tempor</p>
-                <button onClick={() => navigate(`/courses/${c}`)} className="w-full h-11 rounded-full bg-accent-500 text-white text-sm font-medium mb-1 transition-colors hover:bg-accent-600">View Detail</button>
+                <p className="text-xs text-ink-500 mb-4 px-1">Learn practical tools to manage your daily routines and child behavior efficiently.</p>
+                <button onClick={() => navigate(`/courses/${c}`)} className="w-full h-11 rounded-full bg-accent-500 text-white text-sm font-medium mb-1 transition-colors hover:bg-accent-600 cursor-pointer">View Detail</button>
               </div>
             ))}
           </div>
@@ -128,7 +129,7 @@ function TutorialsContent() {
         <div className="lg:col-span-2">
           <h2 className="text-xl sm:text-2xl font-bold mb-6">Tutorials Guidance</h2>
 
-          <button className="w-full bg-gradient-to-b from-brand-500 to-brand-700 rounded-2xl p-8 sm:p-10 text-center text-white mb-6 group">
+          <button className="w-full bg-gradient-to-b from-brand-500 to-brand-700 rounded-2xl p-8 sm:p-10 text-center text-white mb-6 group cursor-pointer">
             <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-12 sm:mb-16 transition-transform group-hover:scale-110">
               <FaPlay size={20} />
             </div>
@@ -182,8 +183,46 @@ function TutorialsContent() {
 
 export default function Training() {
   const { tab } = useParams();
+  const navigate = useNavigate();
   const validTabs = ["parent", "child", "tutorials"];
   const activeKey = validTabs.includes(tab) ? tab : "parent";
+
+  const [user, setUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        if (!token) return;
+
+        const response = await fetch("http://localhost:5000/api/users/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const streak = user?.streakDays || 0;
+  const challengeProgressPercent = Math.min(Math.round((streak / 30) * 100), 100);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/courses?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
 
   return (
     <div>
@@ -195,21 +234,27 @@ export default function Training() {
             </h1>
             <div className="bg-white rounded-2xl p-5 text-ink-900">
               <p className="font-medium mb-2">What do you want to fix today?</p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input type="text" placeholder="Type here..." className="flex-1 h-12 rounded-full border border-ink-300 px-5 text-sm outline-none focus:border-brand-500" />
-                <button className="h-12 px-6 rounded-full bg-accent-500 text-white font-medium hover:bg-accent-600">Submit</button>
-              </div>
+              <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
+                <input 
+                  type="text" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Type here..." 
+                  className="flex-1 h-12 rounded-full border border-ink-300 px-5 text-sm outline-none focus:border-brand-500" 
+                />
+                <button type="submit" className="h-12 px-6 rounded-full bg-accent-500 text-white font-medium hover:bg-accent-600 cursor-pointer">Submit</button>
+              </form>
             </div>
           </div>
-          <div className="bg-white rounded-2xl p-6 text-ink-900 flex items-center justify-between">
+          <div className="bg-white rounded-2xl p-6 text-ink-900 flex items-center justify-between shadow-sm">
             <div>
-              <p className="text-sm text-ink-500 mb-1">3 April, 2025</p>
+              <p className="text-sm text-ink-500 mb-1">Streak: Day {streak}</p>
               <h3 className="text-2xl font-bold mb-4">30-Day<br />Challenges</h3>
-              <button className="h-11 px-5 rounded-full bg-accent-500 text-white text-sm font-medium hover:bg-accent-600">Continue Challenge</button>
+              <button onClick={() => navigate("/challenges")} className="h-11 px-5 rounded-full bg-accent-500 text-white text-sm font-medium hover:bg-accent-600 cursor-pointer">Continue Challenge</button>
             </div>
-            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center" style={{ background: "conic-gradient(#4caf50 65%, #eef0f4 0)" }}>
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white flex items-center justify-center">
-                <span className="text-xl font-bold">65 %</span>
+            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center shadow-inner" style={{ background: `conic-gradient(#4caf50 ${challengeProgressPercent}%, #eef0f4 0)` }}>
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white flex items-center justify-center shadow-sm">
+                <span className="text-xl font-bold">{challengeProgressPercent} %</span>
               </div>
             </div>
           </div>

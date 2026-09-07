@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaCheck } from "react-icons/fa6";
 import homeBanner from "../assets/home_banner.jpg";
 import courseImg from "../assets/home_course_img.png";
 
@@ -10,6 +11,9 @@ const TYPES = [
 
 export default function Therapy() {
   const [selected, setSelected] = useState("individual");
+  const [showModal, setShowModal] = useState(false);
+
+  const selectedLabel = TYPES.find((t) => t.key === selected)?.label || "Individual";
 
   return (
     <div>
@@ -43,8 +47,11 @@ export default function Therapy() {
               <button
                 key={t.key}
                 onClick={() => setSelected(t.key)}
-                className="relative rounded-2xl overflow-hidden h-72 group transition-all duration-200
-                  ring-1 ring-ink-100 hover:ring-2 hover:ring-brand-300 hover:shadow-lg"
+                className={`relative rounded-2xl overflow-hidden h-72 group transition-all duration-200 cursor-pointer ${
+                  isSelected
+                    ? "ring-4 ring-brand-500 shadow-xl"
+                    : "ring-1 ring-ink-100 hover:ring-2 hover:ring-brand-300 hover:shadow-lg"
+                }`}
               >
                 <img
                   src={courseImg}
@@ -64,13 +71,38 @@ export default function Therapy() {
 
         <div className="flex justify-center">
           <button
-            onClick={() => alert(`Free Consultation booked for: ${selected}`)}
-            className="h-14 px-16 rounded-full bg-accent-500 text-white font-semibold text-lg transition-colors hover:bg-accent-600"
+            onClick={() => setShowModal(true)}
+            className="h-14 px-16 rounded-full bg-accent-500 text-white font-semibold text-lg transition-colors hover:bg-accent-600 cursor-pointer"
           >
             Free Consultation
           </button>
         </div>
       </section>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl ring-1 ring-ink-100">
+            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FaCheck size={28} />
+            </div>
+            
+            <h3 className="text-2xl font-bold text-ink-900 mb-2">
+              Consultation Booked Successfully!
+            </h3>
+            
+            <p className="text-sm text-ink-600 mb-6">
+              Your free <span className="font-semibold text-brand-500">{selectedLabel}</span> consultation session has been scheduled. Our team will contact you shortly with the session details.
+            </p>
+            
+            <button
+              onClick={() => setShowModal(false)}
+              className="h-11 px-8 rounded-full bg-brand-500 text-white font-medium text-sm hover:bg-brand-600 transition-colors cursor-pointer"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
