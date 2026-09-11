@@ -5,7 +5,7 @@ import {
   FaRegBookmark,
   FaClock,
   FaLightbulb,
-  FaCircleCheck,
+  FaPlay
 } from "react-icons/fa6";
 import {
   FaTwitter,
@@ -16,7 +16,6 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import courseImg from "../assets/home_course_img.png";
-import classroomImg from "../assets/home_course_img.png";
 
 const SOCIALS = [
   { icon: <FaTwitter />, color: "text-sky-500" },
@@ -27,6 +26,8 @@ const SOCIALS = [
   { icon: <FaWhatsapp />, color: "text-green-500" },
 ];
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
 export default function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -34,20 +35,22 @@ export default function CourseDetail() {
   const [course, setCourse] = useState(null);
   const [recommendedCourses, setRecommendedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Track which lesson is currently playing
+  const [activeLessonIndex, setActiveLessonIndex] = useState(0);
 
   useEffect(() => {
     const fetchCourseData = async () => {
       try {
         setLoading(true);
-        // Fetch specific course details
-        const resCourse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/courses/${id}`);
+        const resCourse = await fetch(`${API_BASE}/api/courses/${id}`);
         if (resCourse.ok) {
           const data = await resCourse.json();
           setCourse(data);
+          setActiveLessonIndex(0);
         }
 
-        // Fetch recommended courses
-        const resRecommended = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/courses`);
+        const resRecommended = await fetch(`${API_BASE}/api/courses`);
         if (resRecommended.ok) {
           const allCourses = await resRecommended.json();
           setRecommendedCourses(allCourses.filter((c) => (c._id || c.id) !== id).slice(0, 4));
@@ -85,24 +88,37 @@ export default function CourseDetail() {
     );
   }
 
-  const chaptersCount = course.lessonsCount || 5;
-  const chapters = Array.from({ length: chaptersCount }, (_, i) => i + 1);
+  const activeVideoUrl = course.lessons && course.lessons.length > 0 
+    ? course.lessons[activeLessonIndex]?.videoUrl 
+    : null;
+    
+  const lessonsCount = course.lessons ? course.lessons.length : 0;
 
   return (
     <div>
-      <section className="relative bg-black">
-        <video
-          src={course.videoUrl || ""}
-          poster={course.image || courseImg}
-          controls
-          className="w-full h-[300px] sm:h-[460px] object-cover"
-        >
-          Your browser does not support the video tag.
-        </video>
+      <section className="relative bg-black border-b border-ink-100 flex justify-center">
+        {activeVideoUrl ? (
+          <video
+            key={activeVideoUrl}
+            src={activeVideoUrl}
+            poster={course.image || courseImg}
+            controls
+            autoPlay
+            className="w-full max-w-5xl h-[300px] sm:h-[460px] object-cover"
+          >
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <img 
+            src={course.image || courseImg} 
+            alt={course.title}
+            className="w-full max-w-5xl h-[300px] sm:h-[460px] object-cover opacity-80"
+          />
+        )}
 
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 text-white pointer-events-none drop-shadow-md">
-          <span className="font-bold text-lg sm:text-xl">{course.topic || "Parenting Guidance"} </span>
-          <span className="text-sm sm:text-base">({course.ageGroup || "All Ages"})</span>
+          <span className="font-bold text-lg sm:text-xl">{course.topic} </span>
+          <span className="text-sm sm:text-base">({course.ageGroup})</span>
         </div>
       </section>
 
@@ -121,14 +137,12 @@ export default function CourseDetail() {
           </div>
 
           <div className="flex items-center gap-3 mb-6">
-            <img
-              src="https://placehold.co/48x48"
-              alt=""
-              className="w-12 h-12 rounded-full object-cover"
-            />
+            <div className="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-xl ring-1 ring-brand-200">
+              {course.instructor ? course.instructor.charAt(0) : "I"}
+            </div>
             <div>
               <p className="font-bold text-ink-900">{course.instructor || "Expert Instructor"}</p>
-              <p className="text-sm text-ink-500">ParentGenius Certified Expert</p>
+              <p className="text-sm text-ink-500">Course Instructor</p>
             </div>
           </div>
 
@@ -137,79 +151,72 @@ export default function CourseDetail() {
             <p className="text-sm text-ink-700 leading-relaxed mb-3">
               {course.description}
             </p>
-            <p className="text-sm text-ink-700 leading-relaxed">
-              Designed specifically to help families navigate developmental milestones, foster emotional resilience, and build positive daily routines together.
-            </p>
           </div>
 
-          <h3 className="font-bold mb-4 text-ink-900">{chaptersCount} Chapters / Lessons</h3>
+          <h3 className="font-bold mb-4 text-ink-900">{lessonsCount} Chapters / Lessons</h3>
 
           <div className="space-y-3">
-            {chapters.map((n) => (
-              <div
-                key={n}
-                className="bg-ink-50 rounded-xl p-4 flex items-center gap-4 ring-1 ring-ink-100"
-              >
-                <span className="text-xl font-bold text-ink-400 w-8 shrink-0">
-                  {String(n).padStart(2, "0")}
-                </span>
+            {course.lessons && course.lessons.map((lesson, index) => {
+              const isActive = activeLessonIndex === index;
+              return (
+                <div
+                  key={lesson._id || index}
+                  onClick={() => lesson.videoUrl && setActiveLessonIndex(index)}
+                  className={`rounded-xl p-4 flex items-center gap-4 ring-1 transition-all ${
+                    isActive 
+                      ? "bg-brand-50 ring-brand-500" 
+                      : lesson.videoUrl 
+                        ? "bg-ink-50 ring-ink-100 hover:bg-ink-100 cursor-pointer" 
+                        : "bg-ink-50/50 ring-ink-100 opacity-60 cursor-not-allowed"
+                  }`}
+                >
+                  <span className={`text-xl font-bold w-8 shrink-0 ${isActive ? "text-brand-500" : "text-ink-400"}`}>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-                <div className="flex-1">
-                  <p className="font-semibold text-brand-500 mb-1">
-                    Lesson {n}: Core Strategy & Practical Steps
-                  </p>
-                  <p className="text-xs text-ink-500">
-                    Comprehensive guidance module with interactive exercises and expert advice.
-                  </p>
+                  <div className="flex-1">
+                    <p className={`font-semibold mb-1 ${isActive ? "text-brand-500" : "text-ink-900"}`}>
+                      {lesson.title}
+                    </p>
+                    <p className="text-xs text-ink-500">
+                      Duration: {lesson.duration || "N/A"}
+                    </p>
+                  </div>
+
+                  <span className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                    isActive ? "bg-brand-500 text-white" : "bg-ink-900 text-white"
+                  }`}>
+                    {lesson.videoUrl ? <FaPlay size={12} className={isActive ? "ml-1" : "ml-1 opacity-80"} /> : <FaLock size={12} />}
+                  </span>
                 </div>
-
-                <span className="w-10 h-10 rounded-full bg-ink-900 text-white flex items-center justify-center shrink-0">
-                  <FaLock size={14} />
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </main>
 
         <aside>
           <div className="flex rounded-xl overflow-hidden bg-brand-500 text-white mb-5 shadow-sm">
             <div className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium">
-              <FaClock size={14} /> {course.duration || "3 Months"}
+              <FaClock size={14} /> {course.duration || "N/A"}
             </div>
             <div className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium border-l border-white/20">
-              <FaLightbulb size={14} /> {chaptersCount} Modules
+              <FaLightbulb size={14} /> {lessonsCount} Modules
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-8">
-            {["Child Growth", "Behavior", "Mindset", "Routines", "Communication", "Emotions"].map((tag, i) => (
-              <div
-                key={i}
-                className="bg-brand-50 text-brand-500 text-xs font-semibold text-center rounded-lg py-2.5 ring-1 ring-brand-100"
-              >
-                {tag}
-              </div>
+            {/* Database se dynamic tags generate kiye hain */}
+            {[course.topic, course.ageGroup].map((tag, i) => (
+              tag && (
+                <div
+                  key={i}
+                  className="bg-brand-50 text-brand-500 text-xs font-semibold text-center rounded-lg py-2.5 ring-1 ring-brand-100"
+                >
+                  {tag}
+                </div>
+              )
             ))}
           </div>
-
-          <h3 className="font-bold mb-3 text-ink-900">This Course Includes</h3>
-
-          <div className="space-y-2.5 pb-6 border-b border-ink-100 mb-6 text-sm">
-            <p className="flex items-center gap-2 text-ink-700">
-              <FaCircleCheck className="text-accent-500" size={16} /> Full lifetime access
-            </p>
-            <p className="flex items-center gap-2 text-ink-700">
-              <FaCircleCheck className="text-accent-500" size={16} /> Access on mobile and desktop
-            </p>
-            <p className="flex items-center gap-2 text-ink-700">
-              <FaCircleCheck className="text-accent-500" size={16} /> Certificate of completion
-            </p>
-          </div>
-
-          <h3 className="font-bold mb-2 text-ink-900">Training 5 or more people?</h3>
-          <p className="text-xs text-ink-500 pb-6 border-b border-ink-100 mb-6 leading-relaxed">
-            ParentGenius enterprise tools help organizations and community support groups manage parent coaching effectively in one secure platform.
-          </p>
 
           <h3 className="font-bold mb-3 text-ink-900">Share this course</h3>
 
@@ -226,40 +233,8 @@ export default function CourseDetail() {
         </aside>
       </div>
 
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-2 gap-10 items-center bg-brand-50 rounded-3xl p-8 ring-1 ring-brand-100">
-          <div>
-            <h3 className="text-2xl font-bold mb-4 text-ink-900">
-              Everything you can do in a physical classroom,{" "}
-              <span className="text-brand-500">
-                you can do with ParentGenius
-              </span>
-            </h3>
-            <p className="text-ink-600 mb-4 leading-relaxed">
-              ParentGenius helps parents and family guides manage daily routines, track milestones, and access expert consultations all in one secure platform.
-            </p>
-            <button
-              onClick={() => navigate("/training/tutorials")}
-              className="text-brand-500 font-semibold underline cursor-pointer"
-            >
-              Learn more
-            </button>
-          </div>
-          <div className="relative">
-            <video
-              src=""
-              poster={classroomImg}
-              controls
-              className="w-full rounded-2xl object-cover shadow-md"
-            >
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-      </section>
-
       {recommendedCourses.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 pb-16">
+        <section className="max-w-7xl mx-auto px-6 pb-16 pt-8 border-t border-ink-100 mt-10">
           <h2 className="text-2xl font-bold mb-6 text-ink-900">Recommended for you</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
             {recommendedCourses.map((c) => {
@@ -276,19 +251,19 @@ export default function CourseDetail() {
                       className="w-full h-40 rounded-xl object-cover mb-3"
                     />
                     <div className="flex items-center gap-3 text-xs text-ink-500 mb-2 px-1">
-                      <span>▦ {c.topic || "Parenting"}</span>
-                      <span>◷ {c.duration || "3 Months"}</span>
+                      <span>▦ {c.topic}</span>
+                      <span>◷ {c.duration}</span>
                     </div>
                     <h4 className="font-semibold mb-2 px-1 text-sm line-clamp-1">
                       {c.title}
                     </h4>
                     <p className="text-xs text-ink-500 mb-4 px-1 line-clamp-2">
-                      {c.description || "Practical tools to manage daily routines and child behavior efficiently."}
+                      {c.description}
                     </p>
                   </div>
                   <button
                     onClick={() => navigate(`/courses/${recId}`)}
-                    className="w-full h-10 rounded-full bg-accent-500 text-white text-sm font-medium transition-colors hover:bg-accent-600 cursor-pointer"
+                    className="w-full h-10 rounded-full bg-brand-500 text-white text-sm font-medium transition-colors hover:bg-brand-600 cursor-pointer"
                   >
                     View Detail
                   </button>

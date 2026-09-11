@@ -40,7 +40,7 @@ export default function ChangePassword() {
     try {
       const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
-      const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/change-password", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/change-password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

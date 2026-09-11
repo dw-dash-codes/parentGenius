@@ -12,7 +12,7 @@ export default function Bookmarks() {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         if (!token) return;
 
-        const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/bookmarks", {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/bookmarks`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -37,12 +37,10 @@ export default function Community() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Form states for structured submission
   const [formContent, setFormContent] = useState("");
   const [formTopic, setFormTopic] = useState(TOPICS[0]);
   const [formAge, setFormAge] = useState(AGES[2]);
   
-  // Track expanded cards for "Read More" slide toggle
   const [expandedCards, setExpandedCards] = useState({});
 
   useEffect(() => {

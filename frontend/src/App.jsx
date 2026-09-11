@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import MainLayout from "./components/layout/MainLayout";
@@ -35,58 +35,69 @@ import ChangePassword from "./pages/account/ChangePassword";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import Subscription from "./pages/account/Subscription";
+import AdminLayout from "./components/layout/AdminLayout";
+import AdminCourses from "./pages/admin/AdminCourses";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminGuard from "./components/layout/AdminGuard";
 
 export default function App() {
   return (
     <>
-    <Routes>
-      <Route path="/" element={<Navigate to="/home" replace />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Routes>
+        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-      <Route element={<OnboardingLayout/>}>
-        <Route path="/onboarding/profile" element={<ProfileSetup />} />
-        <Route path="/onboarding/children" element={<ChildrenCount />} />
-        <Route path="/onboarding/ages" element={<ChildrenAges />} />
-        <Route path="/onboarding/type" element={<ParentType />} />
-        <Route path="/onboarding/goals" element={<ImproveGoals />} />
-        <Route path="/onboarding/values" element={<ChildValues />} />
-        <Route path="/onboarding/struggles" element={<Struggles />} />
-        <Route path="/onboarding/confidence" element={<Confidence />} />
-        <Route path="/onboarding/email-optin" element={<EmailOptIn />} />
-        <Route path="/onboarding/needs" element={<CurrentNeeds />} />
-        
-      </Route>
+        <Route element={<OnboardingLayout />}>
+          <Route path="/onboarding/profile" element={<ProfileSetup />} />
+          <Route path="/onboarding/children" element={<ChildrenCount />} />
+          <Route path="/onboarding/ages" element={<ChildrenAges />} />
+          <Route path="/onboarding/type" element={<ParentType />} />
+          <Route path="/onboarding/goals" element={<ImproveGoals />} />
+          <Route path="/onboarding/values" element={<ChildValues />} />
+          <Route path="/onboarding/struggles" element={<Struggles />} />
+          <Route path="/onboarding/confidence" element={<Confidence />} />
+          <Route path="/onboarding/email-optin" element={<EmailOptIn />} />
+          <Route path="/onboarding/needs" element={<CurrentNeeds />} />
+        </Route>
 
-      <Route path="/home" element={<Home/>} />
+        <Route path="/home" element={<Home />} />
 
-      <Route element={<MainLayout />}>
-        <Route path="/training/:tab" element={<Training />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/courses/:id" element={<CourseDetail />} />
-        <Route path="/courses/topic/:topic" element={<CourseTopic />} />
-        <Route path="/courses/solutions/:topic" element={<CourseSolutions />} />
-        <Route path="/resources" element={<Resources />} />
-        <Route path="/resources/:id" element={<ResourceDetail />} />
-        <Route path="/therapy" element={<Therapy />} />
-        <Route path="/community" element={<Community />} />
-        <Route path="/challenges" element={<Challenges />} />
-        <Route path="/challenges/:day" element={<ChallengeDetail />} />
+        <Route element={<MainLayout />}>
+          <Route path="/training/:tab" element={<Training />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:id" element={<CourseDetail />} />
+          <Route path="/courses/topic/:topic" element={<CourseTopic />} />
+          <Route
+            path="/courses/solutions/:topic"
+            element={<CourseSolutions />}
+          />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/resources/:id" element={<ResourceDetail />} />
+          <Route path="/therapy" element={<Therapy />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/challenges" element={<Challenges />} />
+          <Route path="/challenges/:day" element={<ChallengeDetail />} />
 
-        <Route path="/account" element={<Account />} />
-        <Route path="/account/edit" element={<Edit />} />
-        <Route path="/account/level" element={<Level />} />
-        <Route path="/account/bookmarks" element={<Bookmarks />} />
-        <Route path="/account/reminders" element={<Reminders />} />
-        <Route path="/account/password" element={<ChangePassword />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-conditions" element={<TermsConditions />} />
-        <Route path="/subscription" element={<Subscription />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/account/edit" element={<Edit />} />
+          <Route path="/account/level" element={<Level />} />
+          <Route path="/account/bookmarks" element={<Bookmarks />} />
+          <Route path="/account/reminders" element={<Reminders />} />
+          <Route path="/account/password" element={<ChangePassword />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-conditions" element={<TermsConditions />} />
+          <Route path="/subscription" element={<Subscription />} />
+        </Route>
 
-
-      </Route>
-
-    </Routes>
+        <Route element={<AdminGuard />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminCourses />} />
+            <Route path="courses" element={<AdminCourses />} />
+            <Route path="users" element={<AdminUsers />} />
+          </Route>
+        </Route>
+      </Routes>
       <Analytics />
     </>
   );

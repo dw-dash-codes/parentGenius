@@ -1,5 +1,12 @@
 import mongoose from 'mongoose';
 
+
+const lessonSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  duration: { type: String, required: true },
+  videoUrl: { type: String, default: "" }
+});
+
 const courseSchema = new mongoose.Schema(
   {
     title: {
@@ -31,10 +38,8 @@ const courseSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
-    lessonsCount: {
-      type: Number,
-      default: 5,
-    },
+    
+    lessons: [lessonSchema],
   },
   { timestamps: true }
 );

@@ -76,7 +76,7 @@ export default function Edit() {
         zipCode: formData.zipCode,
       };
 
-      const response = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/profile", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

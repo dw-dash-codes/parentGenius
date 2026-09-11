@@ -31,6 +31,9 @@ const TOPICS = [
   "Parent Burnout & Self-Care",
 ];
 
+// Yahan humne API_BASE define kar diya hai
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
 export default function Courses() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -50,16 +53,16 @@ export default function Courses() {
       try {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         
-        // Fetch all available courses
-        const resCourses = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/courses");
+        // Backticks (`) use kiye hain string interpolation ke liye
+        const resCourses = await fetch(`${API_BASE}/api/courses`);
         if (resCourses.ok) {
           const data = await resCourses.json();
           setCourses(data);
         }
 
-        // Fetch user's in-progress courses if logged in
         if (token) {
-          const resProgress = await fetch("${import.meta.env.VITE_API_BASE_URL}/api/users/progress", {
+          // Yahan bhi backticks (`) use kiye hain
+          const resProgress = await fetch(`${API_BASE}/api/users/progress`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (resProgress.ok) {
