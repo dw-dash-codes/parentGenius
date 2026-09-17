@@ -9,7 +9,8 @@ import {
   FaArrowRightFromBracket, 
   FaChevronRight,
   FaBars, 
-  FaXmark 
+  FaXmark,
+  FaShieldHalved
 } from "react-icons/fa6";
 import profileImg from "../assets/profile_img.jpg";
 
@@ -124,6 +125,22 @@ export default function HomeNavbar() {
                   </div>
 
                   <div className="p-1.5 border-b border-ink-100 space-y-1">
+                    {user?.role === "admin" && (
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          navigate("/admin");
+                        }}
+                        className="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-left text-sm font-semibold text-brand-600 bg-brand-50 transition-all duration-150 hover:bg-brand-100 active:scale-[0.98] group"
+                      >
+                        <span className="flex items-center gap-3">
+                          <FaShieldHalved className="text-brand-500 text-base shrink-0 transition-colors group-hover:text-brand-600" />
+                          Admin Dashboard
+                        </span>
+                        <FaChevronRight className="text-brand-400 text-xs shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-brand-500" />
+                      </button>
+                    )}
+
                     <button
                       onClick={() => {
                         setDropdownOpen(false);
@@ -220,15 +237,28 @@ export default function HomeNavbar() {
             
             <div className="sm:hidden pt-4 mt-2 border-t border-ink-100">
               {user ? (
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    handleLogout();
-                  }}
-                  className="block w-full text-center py-3 rounded-xl bg-red-50 text-red-500 text-sm font-bold transition-colors hover:bg-red-100"
-                >
-                  Logout
-                </button>
+                <>
+                  {user?.role === "admin" && (
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigate("/admin");
+                      }}
+                      className="block w-full text-center py-3 mb-2 rounded-xl bg-brand-50 text-brand-600 text-sm font-bold transition-colors hover:bg-brand-100"
+                    >
+                      Admin Dashboard
+                    </button>
+                  )}
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="block w-full text-center py-3 rounded-xl bg-red-50 text-red-500 text-sm font-bold transition-colors hover:bg-red-100"
+                  >
+                    Logout
+                  </button>
+                </>
               ) : (
                 <Link
                   to="/login"

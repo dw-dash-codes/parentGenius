@@ -30,7 +30,6 @@ export default function AdminUsers() {
         const contentType = res.headers.get("content-type");
         if (res.ok && contentType && contentType.includes("application/json")) {
           const data = await res.json();
-          console.log("USERS FROM API:", data);
           setUsers(Array.isArray(data) ? data : []);
         } else {
           setUsers([]);
