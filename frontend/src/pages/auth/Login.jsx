@@ -48,9 +48,14 @@ export default function Login() {
         storage.setItem("user", JSON.stringify(data.user));
         storage.setItem("userId", data.user.id);
         storage.setItem("token", data.user.token);
+
+        if (data.user.role === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/home");
+        }
       }
 
-      navigate("/home");
     } catch (err) {
       setError(err.message);
     } finally {
