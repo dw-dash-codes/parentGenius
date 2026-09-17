@@ -1,9 +1,10 @@
 import express from 'express';
-import { changePassword, completeChallenge, getUserProfile, getUserProgress, updateOnboarding, updateUserProfile } from '../controllers/userController.js';
+import { changePassword, completeChallenge, getAllUsers, getUserProfile, getUserProgress, updateOnboarding, updateUserProfile } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+router.get('/', protect, getAllUsers);
 router.put('/onboarding', protect, updateOnboarding);
 router.get('/profile', protect,getUserProfile);
 router.put('/profile', protect, updateUserProfile);

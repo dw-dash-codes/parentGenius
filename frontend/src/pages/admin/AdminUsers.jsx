@@ -6,23 +6,22 @@ export default function AdminUsers() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchUsers = async () => {
       try {
         setLoading(true);
-        const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/courses`,
-        );
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
 
-        // Naya Check: Dekho ke response waqai JSON hai ya nahi
         const contentType = res.headers.get("content-type");
         if (res.ok && contentType && contentType.includes("application/json")) {
           const data = await res.json();
-          setCourses(Array.isArray(data) ? data : []);
+          console.log("USERS FROM API:", data);
+          setUsers(Array.isArray(data) ? data : []);
         } else {
-          console.warn(
-            "Backend API not ready or returned HTML instead of JSON.",
-          );
-          setCourses([]); // Fallback empty array
+          setUsers([]);
         }
       } catch (error) {
         console.error("Fetch error:", error);
@@ -46,7 +45,7 @@ export default function AdminUsers() {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        },
+        }
       );
 
       if (res.ok) {
@@ -88,7 +87,6 @@ export default function AdminUsers() {
             <tbody className="divide-y divide-ink-100 text-sm">
               {users.map((u) => {
                 const userId = u._id || u.id;
-                // Format date if available, otherwise show fallback
                 const joinedDate = u.createdAt
                   ? new Date(u.createdAt).toLocaleDateString("en-US", {
                       month: "short",
@@ -97,19 +95,21 @@ export default function AdminUsers() {
                     })
                   : "Recent";
 
+                const displayName = u.fullName || u.username || "Unknown User";
+
                 return (
                   <tr key={userId} className="hover:bg-brand-50/30">
                     <td className="p-4 pl-6">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-sm shrink-0">
-                          {u.name ? (
-                            u.name.charAt(0).toUpperCase()
+                          {displayName !== "Unknown User" ? (
+                            displayName.charAt(0).toUpperCase()
                           ) : (
                             <FaUser size={12} />
                           )}
                         </div>
                         <span className="font-semibold text-ink-900">
-                          {u.name || "Unknown User"}
+                          {displayName}
                         </span>
                       </div>
                     </td>
