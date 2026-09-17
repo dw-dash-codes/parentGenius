@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      default: "user",
+    },
     city: { type: String, default: "" },
     zipCode: { type: String, default: "" },
     countryCode: { type: String, default: "+1" },
