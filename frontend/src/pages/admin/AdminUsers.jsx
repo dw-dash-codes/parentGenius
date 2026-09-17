@@ -5,13 +5,25 @@ export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getToken = () => {
+    return localStorage.getItem("token") || sessionStorage.getItem("token");
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
+        const token = getToken();
+
+        if (!token) {
+          console.error("No token found!");
+          setLoading(false);
+          return;
+        }
+
         const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -38,12 +50,13 @@ export default function AdminUsers() {
       return;
 
     try {
+      const token = getToken();
       const res = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/api/users/${id}`,
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

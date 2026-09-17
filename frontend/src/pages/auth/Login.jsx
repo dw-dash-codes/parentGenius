@@ -51,7 +51,7 @@ export default function Login() {
         storage.setItem("role", data.user.role);
 
         if (data.user.role === "admin") {
-          navigate("/admin/");
+          navigate("/admin");
         } else {
           navigate("/home");
         }
