@@ -26,7 +26,7 @@ export const registerUser = async (req, res) => {
         id: newUser._id,
         username: newUser.username,
         email: newUser.email,
-        role: newUser.role, // <-- YEH LINE ADD KAREIN
+        role: newUser.role, 
         token: generateToken(newUser._id),
       },
     });
@@ -56,7 +56,7 @@ export const loginUser = async (req, res) => {
         email: user.email,
         tier: user.tier,
         points: user.points,
-        role: user.role, // <-- YEH LINE LAZMI ADD KAREIN
+        role: user.role, 
         token: generateToken(user._id),
       },
     });
